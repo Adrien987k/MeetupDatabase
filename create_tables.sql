@@ -25,8 +25,7 @@ CREATE TABLE Venue(
        rating.count INTEGER NOT NULL);
 
 CREATE TYPE EVENT_STATUS_TYPE AS ENUM('cancelled', 'upcoming', 'past', 'proposed')
-CREARE TYPE VISIBILITY_TYPE AS ENUM('public', 'member', 'public_limited')
-
+CREATE TYPE VISIBILITY_TYPE AS ENUM('public', 'member', 'public_limited')
 
 CREATE TABLE Event(
        event_id INTEGER PRIMARY KEY,
@@ -42,5 +41,33 @@ CREATE TABLE Event(
        fee_id INTEGER FOREIGN KEY REFERENCES Fee(fee_id),
        venue_id INTEGER FOREIGN KEY REFERENCES Venue(venue_id),
        updated DATE,
-       visibility VISIBILITY_TYPE
-       ...);
+       visibility VISIBILITY_TYPE NOT NULL,
+       why TEXT,
+       headcount INTEGER,
+       rating_average REAL,
+       raiting.count INTEGER NOT NULL,
+       rsvp_limit INTEGER NOT NULL,
+       maybe_rsvp_count INTEGER NOT NULL,
+       yes_rsvp_count INTEGER NOT NULL);
+
+CREATE TABLE Event_organizer(
+       event_id INTEGER REFERENCES Event(event_id),
+       user_id INTEGER REFERENCES Member(user_id));
+
+CREATE TYPE JOIN_MODE_TYPE AS ENUM('open', 'closed', 'approval')
+
+CREATE TABLE Group(
+       group_id INTEGER PRIMARY KEY,
+       created DATE NOT NULL,
+       category_id FOREIGN KEY REFERENCES Category(category_id)
+       description TEXT NOT NULL,
+       join_mode JOIN_MODE_TYPE NOT NULL,
+       group_name VARCHAR(50),
+       city_id INTEGER FOREIGN KEY REFERENCES City(city_id)
+       visibility VISIBILITY_TYPE NOT NULL,
+       who VARCHAR(50),
+       photo.base_url TEXT,
+       photo.highres_link TEXT,
+       photo.photo_link TEXT,
+       photo.thumb_link TEXT,
+       photo.type VARCHAR(20));
