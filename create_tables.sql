@@ -3,7 +3,7 @@ CREATE TYPE MANAGER_TYPE_TYPE AS ENUM ('Moderator', 'Administrator');
 CREATE TABLE WebsiteManager(
        user_id INTEGER PRIMARY KEY,
        user_name VARCHAR(50) NOT NULL,
-       joined DATE NOT NULL,
+       joined TIMESTAMP NOT NULL,
        manager_type MANAGER_TYPE_TYPE NOT NULL);
 
 CREATE TABLE Category(
@@ -24,12 +24,12 @@ CREATE TABLE Member(
        member_id INTEGER PRIMARY KEY,
        member_name VARCHAR(50) NOT NULL,
        member_status USER_STATUS_TYPE NOT NULL,
-       joined DATE NOT NULL,
+       joined TIMESTAMP NOT NULL,
        bio TEXT,
        city_id INTEGER
        FOREIGN KEY city_id REFERENCES City(city_id)
                ON DELETE SET NULL,
-       visited DATE NOT NULL);
+       visited TIMESTAMP NOT NULL);
 
 CREATE TABLE Moderator_category(
        user_id INTEGER
@@ -84,21 +84,21 @@ CREATE TABLE Event(
        group_id INTEGER,
        FOREIGN KEY group_id REFERENCES Group(group_id)
                ON DELETE CASCADE,
-       created DATE NOT NULL,
+       created TIMESTAMP NOT NULL,
        description TEXT,
        duration INTEGER NOT NULL,
        photo_url TEXT,
        how_to_find_us TEXT,
        event_name VARCHAR(50) NOT NULL,
        event_status EVENT_STATUS_TYPE NOT NULL,
-       event_time DATE NOT NULL,
+       event_time TIMESTAMP NOT NULL,
        fee_id INTEGER,
        FOREIGN KEY fee_id REFERENCES Fee(fee_id)
                ON DELETE SET NULL,
        venue_id INTEGER,
        FOREIGN KEY venue_id REFERENCES Venue(venue_id)
                ON DELETE CASCADE,
-       updated DATE,
+       updated TIMESTAMP,
        visibility VISIBILITY_TYPE NOT NULL,
        why TEXT,
        headcount INTEGER,
@@ -120,7 +120,7 @@ CREATE TYPE JOIN_MODE_TYPE AS ENUM('open', 'closed', 'approval');
 
 CREATE TABLE Group(
        group_id INTEGER PRIMARY KEY,
-       created DATE NOT NULL,
+       created TIMESTAMP NOT NULL,
        category_id INTEGER,
        FOREIGN KEY category_id REFERENCES Category(category_id)
                ON DELETE CASCADE
@@ -133,7 +133,4 @@ CREATE TABLE Group(
                ON DELETE SET NULL,
        visibility VISIBILITY_TYPE NOT NULL,
        who VARCHAR(50),
-       photo.base_url TEXT,
-       photo.highres_link TEXT,
-       photo.photo_link TEXT,
-       photo.thumb_link TEXT);
+       photo.photo_link VARCHAR(200));
