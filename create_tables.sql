@@ -35,8 +35,8 @@ CREATE TABLE Moderator_category(
        user_id INTEGER
        FOREIGN KEY user_id REFERENCES Member(user_id)
                ON DELETE CASCADE,
-       category_id INTEGER
-       FOREIGN KEY REFERENCES Category(category_id)
+       category_id INTEGER,
+       FOREIGN KEY category_id REFERENCES Category(category_id)
                ON DELETE CASCADE);
 
 CREATE TABLE Group_follower(
@@ -109,11 +109,11 @@ CREATE TABLE Event(
        yes_rsvp_count INTEGER NOT NULL);
 
 CREATE TABLE Event_organizer(
-       event_id INTEGER
-       FOREIGN KEY REFERENCES Event(event_id)
+       event_id INTEGER,
+       FOREIGN KEY event_id REFERENCES Event(event_id)
                   ON DELETE CASCADE,
-       user_id INTEGER
-       FOREIGN KEY REFERENCES Member(user_id)
+       user_id INTEGER,
+       FOREIGN KEY user_id  REFERENCES Member(user_id)
                   ON DELETE CASCADE);
 
 CREATE TYPE JOIN_MODE_TYPE AS ENUM('open', 'closed', 'approval');
