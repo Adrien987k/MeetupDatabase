@@ -21,20 +21,15 @@ CREATE TABLE City(
 
 CREATE TYPE USER_STATUS_TYPE AS ENUM ('active')
 CREATE TABLE Member(
-       user_id INTEGER PRIMARY KEY,
-       user_name VARCHAR(50) NOT NULL,
-       user_status USER_STATUS_TYPE NOT NULL,
+       member_id INTEGER PRIMARY KEY,
+       member_name VARCHAR(50) NOT NULL,
+       member_status USER_STATUS_TYPE NOT NULL,
        joined DATE NOT NULL,
        bio TEXT,
-       city_id INTEGER,
-       FOREIGN KEY city_id REFERENCES City(city_id)
+       city_name VARCHAR(50),
+       FOREIGN KEY city_name REFERENCES City(city_name)
                ON DELETE SET NULL,
-       visited DATE NOT NULL,
-       photo.base_url TEXT,
-       photo.highres_url TEXT,
-       photo.photo_link TEXT,
-       photo.thumb_link TEXT,
-       photo.type VARCHAR(20));
+       visited DATE NOT NULL);
 
 CREATE TABLE Moderator_category(
        user_id INTEGER,
@@ -43,14 +38,6 @@ CREATE TABLE Moderator_category(
        category_id INTEGER,
        FOREIGN KEY REFERENCES Category(category_id)
                ON DELETE CASCADE,);
-
-CREATE TABLE Group_organizer(
-       group_id INTEGER,
-       FOREIGN KEY REFERENCES Group(group_id)
-               ON DELETE CASCADE,
-       user_id INTEGER,
-       FOREIGN KEY REFERENCES Member(user_id)
-               ON DELETE CASCADE);
 
 CREATE TABLE Group_follower(
        group_id INTEGER,
@@ -125,6 +112,7 @@ CREATE TABLE Group(
        category_id FOREIGN KEY REFERENCES Category(category_id)
        description TEXT NOT NULL,
        join_mode JOIN_MODE_TYPE NOT NULL,
+       organizer INTEGER,
        group_name VARCHAR(50),
        city_id INTEGER FOREIGN KEY REFERENCES City(city_id)
        visibility VISIBILITY_TYPE NOT NULL,
