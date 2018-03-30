@@ -120,5 +120,4 @@ CREATE TABLE Group(
        photo.base_url TEXT,
        photo.highres_link TEXT,
        photo.photo_link TEXT,
-       photo.thumb_link TEXT,
-       photo.type VARCHAR(20));
+       photo.thumb_link TEXT);
