@@ -72,15 +72,6 @@ CREATE TABLE Topic(
        parent_topic_id INTEGER
 );
 
-CREATE TABLE Fee(
-       fee_id INTEGER PRIMARY KEY,
-       accpets ACCEPTS_TYPE NOT NULL,
-       amount REAL,
-       currency VARCHAR(20),
-       description TEXT,
-       required BOOLEAN NOT NULL
-);
-
 CREATE TABLE Venue(
        venue_id INTEGER PRIMARY KEY,
        address_1 VARCHAR(50) NOT NULL,
@@ -100,7 +91,6 @@ CREATE TABLE Event(
        event_name VARCHAR(50) NOT NULL,
        event_status EVENT_STATUS_TYPE NOT NULL,
        event_time TIMESTAMP NOT NULL,
-       fee_id INTEGER REFERENCES Fee(fee_id) ON DELETE SET NULL,
        venue_id INTEGER REFERENCES Venue(venue_id) ON DELETE CASCADE,
        updated TIMESTAMP,
        visibility VISIBILITY_TYPE NOT NULL,
@@ -110,7 +100,10 @@ CREATE TABLE Event(
        raiting_count INTEGER NOT NULL,
        rsvp_limit INTEGER NOT NULL,
        maybe_rsvp_count INTEGER NOT NULL,
-       yes_rsvp_count INTEGER NOT NULL
+       yes_rsvp_count INTEGER NOT NULL,
+       fee_accpets ACCEPTS_TYPE NOT NULL,
+       fee_amount REAL,
+       fee_required BOOLEAN NOT NULL
 );
 
 CREATE TABLE Event_organizer(
