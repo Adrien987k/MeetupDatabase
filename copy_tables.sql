@@ -7,7 +7,7 @@ FROM cities2.csv csv HEADER NULL 'not_found';
 \copy Member(member_id,bio,city_name,joined,member_name,member_status,visited)
 FROM members2.csv csv HEADER NULL 'not_found';
 
-\copy Group(group_id,category_id,city_id,created,description,photo.photo_link,join_mode,group_name,organizer_id,visibility,who)
+\copy Groups(group_id,category_id,city_id,created,description,photo.photo_link,join_mode,group_name,organizer_id,visibility,who)
 FROM groups2.csv csv HEADER NULL 'not_found';
 
 \copy Topic(topic_id,description,topic_name,urlkey,main_topic_id)
