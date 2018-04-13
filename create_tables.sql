@@ -61,11 +61,9 @@ CREATE TABLE Venue(
        venue_id INTEGER PRIMARY KEY,
        address_1 VARCHAR(50) NOT NULL,
        venue_name VARCHAR(50) NOT NULL,
-       city_id INTEGER,
-       FOREIGN KEY city_id REFERENCES City(city_id)
-               ON DELETE CASCADE
-       rating.average REAL NOT NULL,
-       rating.count INTEGER NOT NULL);
+       city_name VARCHAR(50) REFERENCES City(city_name) ON DELETE CASCADE
+       rating_average REAL NOT NULL,
+       rating_count INTEGER NOT NULL);
 
 
 CREATE TYPE EVENT_STATUS_TYPE AS ENUM('cancelled', 'upcoming', 'past', 'proposed');
@@ -98,7 +96,8 @@ CREATE TABLE Event(
        yes_rsvp_count INTEGER NOT NULL,
        fee_accpets ACCEPTS_TYPE NOT NULL,
        fee_amount REAL,
-       fee_required BOOLEAN NOT NULL);
+       fee_required BOOLEAN NOT NULL,
+       repinned BOOLEAN);
 
 CREATE TABLE Event_organizer(
        event_id INTEGER,
@@ -126,3 +125,7 @@ CREATE TABLE Group(
        visibility VISIBILITY_TYPE NOT NULL,
        who VARCHAR(50),
        photo.photo_link VARCHAR(200));
+
+CREATE TABLE Topic_followed(
+       topic_id INTEGER REFERENCES Topic(topic_id) ON DELETE CASCADE,
+       member_id INTEGER REFERENCES Member(memebr_id) ON DELETE CASCADE);
