@@ -2,7 +2,7 @@
 database_name="bardes"
 database_user="bardes"
 
-psql --host=db.dptinfo.ens-cachan.fr --dbname=database_name -f create_table.sql
+psql bardes bardes -h db.dptinfo.ens-cachan.fr
 
 #add to ~/.pgpass file :
 #db.dptinfo.ens-cachan.fr:[port]:database_name:database_user:[password]

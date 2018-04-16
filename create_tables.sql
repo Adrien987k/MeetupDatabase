@@ -22,7 +22,7 @@ CREATE TABLE Category(
 
 CREATE TABLE City(
        city_id INTEGER PRIMARY KEY,
-       city_name VARCHAR(50) NOT NULL,
+       city_name VARCHAR(50) PRIMARY KEY,
        country VARCHAR(50) NOT NULL,
        latitude REAL NOT NULL,
        longitude REAL NOT NULL,
@@ -49,11 +49,11 @@ CREATE TABLE Member(
        member_status USER_STATUS_TYPE NOT NULL,
        joined TIMESTAMP NOT NULL,
        bio TEXT,
-       city_id INTEGER REFERENCES City(city_id) ON DELETE SET NULL,
+       city_name VARCHAR(50) REFERENCES City(city_name) ON DELETE SET NULL,
        visited TIMESTAMP NOT NULL
 );
 
-CREATE TABLE Moderator_categories(
+CREATE TABLE Moderator_category(
        user_id INTEGER REFERENCES Member(member_id) ON DELETE CASCADE,
        category_id INTEGER REFERENCES Category(category_id) ON DELETE CASCADE
 );
