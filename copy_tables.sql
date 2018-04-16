@@ -25,3 +25,12 @@ FROM venues.csv csv HEADER NULL 'not_found';
 \copy Topic_followed(topic_id,member_id)
 FROM members_topic2.csv csv HEADER NULL 'not_found';
 
+\copy Group_followed(group_id,member_id)
+FROM members_topic2.csv csv HEADER NULL 'not_found';
+
+\copy Websitemanager(user_id,user_name,joined,manager_type)
+FROM members_topic2.csv csv HEADER NULL 'not_found';
+
+\copy Moderator_category(user_id,category_id)
+FROM moderator_category2.csv csv HEADER NULL 'not_found';
+

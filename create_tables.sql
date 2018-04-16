@@ -53,12 +53,12 @@ CREATE TABLE Member(
        visited TIMESTAMP NOT NULL
 );
 
-CREATE TABLE Moderator_category(
+CREATE TABLE Moderator_categories(
        user_id INTEGER REFERENCES Member(member_id) ON DELETE CASCADE,
        category_id INTEGER REFERENCES Category(category_id) ON DELETE CASCADE
 );
 
-CREATE TABLE Group_follower(
+CREATE TABLE Group_followed(
        group_id INTEGER REFERENCES Groups(group_id) ON DELETE CASCADE,
        user_id INTEGER REFERENCES Member(member_id) ON DELETE CASCADE
 );
