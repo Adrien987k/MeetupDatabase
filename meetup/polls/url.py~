@@ -1,0 +1,150 @@
+Language: fr
+Documentation version: 1.11
+Écriture de votre première application Django, 1ère partie¶
+Apprenons avec un exemple.
+
+Tout au long de ce tutoriel, nous vous guiderons dans la création d’une application simple de sondage.
+
+Cela consistera en deux parties :
+
+Un site public qui permet à des gens de voir les sondages et d’y répondre.
+Un site d’administration qui permet d’ajouter, de modifier et de supprimer des sondages.
+Nous supposerons que Django est déjà installé. Vous pouvez savoir si Django est installé et sa version en exécutant la commande suivante dans un terminal (indiqué par le préfixe $) :
+
+$ python -m django --version
+Si Django est installé, vous devriez voir apparaître la version de l’installation. Dans le cas contraire, vous obtiendrez une erreur disant « No module named django » (aucun module nommé django).
+
+Ce didacticiel est écrit pour Django 1.11 et Python 3.4 (ou plus récent). Si la version de Django ne correspond pas, référez-vous au didacticiel correspondant à votre version de Django en utilisant le sélecteur de version au bas de cette page, ou mettez à jour Django à la version la plus récente. Si vous utilisez encore Python 2.7, il sera nécessaire d’ajuster légèrement les exemples de code, comme expliqué dans les commentaires.
+
+Consultez Comment installer Django pour tout conseil sur la manière de supprimer d’anciennes versions de Django pour en installer une nouvelle.
+
+Où obtenir de l’aide :
+
+Si vous avez des problèmes au long de ce tutoriel, écrivez un message sur django-users (anglophone) ou passez sur #django-fr sur irc.freenode.net pour discuter avec d’autres utilisateurs de Django qui pourraient vous aider.
+
+Création d’un projet¶
+Si c’est la première fois que vous utilisez Django, vous devrez vous occuper de quelques éléments de configuration initiaux. Plus précisément, vous devrez lancer la génération automatique de code qui mettra en place un projet Django – un ensemble de réglages particuliers à une instance de Django, qui comprend la configuration de la base de données, des options spécifiques à Django et d’autres propres à l’application.
+
+Depuis un terminal en ligne de commande, déplacez-vous à l’aide de la commande cd dans un répertoire dans lequel vous souhaitez conserver votre code, puis lancez la commande suivante :
+
+$ django-admin startproject mysite
+Cela va créer un répertoire mysite dans le répertoire courant. Si cela ne fonctionne pas, consultez Problèmes d’exécution de django-admin.
+
+Note
+
+Vous devez éviter de nommer vos projets en utilisant des noms réservés de Python ou des noms de composants de Django. Cela signifie en particulier que vous devez éviter d’utiliser des noms comme django (qui entrerait en conflit avec Django lui-même) ou test (qui entrerait en conflit avec un composant intégré de Python).
+
+À quel endroit ce code devrait-il se trouver ?
+
+Si vous avez une expérience en PHP, vous avez probablement l’habitude de placer votre code dans le répertoire racine de votre serveur Web (comme /var/www/). Avec Django, ne le faites pas. Ce n’est pas une bonne idée de mettre du code Python dans le répertoire racine de votre serveur Web, parce que cela crée le risque que l’on puisse voir votre code sur le Web, ce qui n’est pas bon pour la sécurité.
+
+Mettez votre code dans un répertoire en dehors de la racine de votre serveur Web, comme par exemple home/moncode.
+
+Voyons ce que startproject a créé :
+
+mysite/
+    manage.py
+    mysite/
+        __init__.py
+        settings.py
+        urls.py
+        wsgi.py
+Ces fichiers sont :
+
+Le premier répertoire racine mysite/ n’est qu’un contenant pour votre projet. Son nom n’a pas d’importance pour Django ; vous pouvez le renommer comme vous voulez.
+manage.py : un utilitaire en ligne de commande qui vous permet d’interagir avec ce projet Django de différentes façons. Vous trouverez toutes les informations nécessaires sur manage.py dans django-admin et manage.py.
+Le sous-répertoire mysite/ correspond au paquet Python effectif de votre projet. C’est le nom du paquet Python que vous devrez utiliser pour importer ce qu’il contient (par ex. mysite.urls).
+mysite/__init__.py : un fichier vide qui indique à Python que ce répertoire doit être considéré comme un paquet. Si vous êtes débutant en Python, lisez les informations sur les paquets (en) dans la documentation officielle de Python.
+mysite/settings.py : réglages et configuration de ce projet Django. Les réglages de Django vous apprendra tout sur le fonctionnement des réglages.
+mysite/urls.py : les déclarations des URL de ce projet Django, une sorte de « table des matières » de votre site Django. Vous pouvez en lire plus sur les URL dans Distribution des URL.
+mysite/wsgi.py : un point d’entrée pour les serveurs Web compatibles WSGI pour déployer votre projet. Voir Comment déployer avec WSGI pour plus de détails.
+Le serveur de développement¶
+Vérifions que votre projet Django fonctionne. Déplacez-vous dans le répertoire mysite si ce n’est pas déjà fait, et lancez les commandes suivantes :
+
+$ python manage.py runserver
+Vous verrez les messages suivants défiler en ligne de commande :
+
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have unapplied migrations; your app may not work properly until they are applied.
+Run 'python manage.py migrate' to apply them.
+
+décembre 02, 2017 - 15:50:53
+Django version 1.11, using settings 'mysite.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+Note
+
+Ignorez pour l’instant l’avertissement au sujet des migrations de base de données non appliquées ; nous nous occuperons de la base de données tantôt.
+
+Vous avez démarré le serveur de développement de Django, un serveur Web léger entièrement écrit en Python. Nous l’avons inclus avec Django de façon à vous permettre de développer rapidement, sans avoir à vous occuper de la configuration d’un serveur de production – comme Apache – tant que vous n’en avez pas besoin.
+
+C’est le moment de noter soigneusement ceci : n’utilisez jamais ce serveur pour quoi que ce soit qui s’approche d’un environnement de production. Il est fait seulement pour tester votre travail pendant le développement (notre métier est le développement d’environnements Web, pas de serveurs Web).
+
+Maintenant que le serveur tourne, allez à l’adresse http://127.0.0.1:8000 avec votre navigateur Web. Vous verrez une page avec le message « Welcome to Django » sur un joli fond bleu pastel. Ça marche !
+
+Modification du port
+
+Par défaut, la commande runserver démarre le serveur de développement sur l’IP interne sur le port 8000.
+
+Si vous voulez changer cette valeur, passez-la comme paramètre sur la ligne de commande. Par exemple, cette commande démarre le serveur sur le port 8080 :
+
+$ python manage.py runserver 8080
+Si vous voulez changer l’IP du serveur, passez-la comme paramètre avec le port. Par exemple, pour écouter toutes les IP publiques disponibles (ce qui est utile si vous exécutez Vagrant ou que souhaitez montrer votre travail à des personnes sur d’autres ordinateurs de votre réseau), faites :
+
+$ python manage.py runserver 0:8000
+0 est un raccourci pour 0.0.0.0. La documentation complète du serveur de développement se trouve dans la référence de runserver.
+
+Rechargement automatique de runserver
+
+Le serveur de développement recharge automatiquement le code Python lors de chaque requête si nécessaire. Vous ne devez pas redémarrer le serveur pour que les changements de code soient pris en compte. Cependant, certaines actions comme l’ajout de fichiers ne provoquent pas de redémarrage, il est donc nécessaire de redémarrer manuellement le serveur dans ces cas.
+
+Création de l’application Polls¶
+Maintenant que votre environnement – un « projet » – est en place, vous êtes prêt à commencer à travailler.
+
+Chaque application que vous écrivez avec Django est en fait un paquet Python qui respecte certaines conventions. Django est livré avec un utilitaire qui génère automatiquement la structure des répertoires de base d’une application, ce qui vous permet de vous concentrer sur l’écriture du code, plutôt que sur la création de répertoires.
+
+Projets vs. applications
+
+Quelle est la différence entre un projet et une application ? Une application est une application Web qui fait quelque chose – par exemple un système de blog, une base de données publique ou une application de sondage. Un projet est un ensemble de réglages et d’applications pour un site Web particulier. Un projet peut contenir plusieurs applications. Une application peut apparaître dans plusieurs projets.
+
+Vos applications peuvent se trouver à n’importe quel endroit de votre chemin de recherche Python. Dans ce didacticiel, nous allons créer une application de sondage au même niveau que le fichier manage.py pour qu’elle puisse être importée comme module de premier niveau plutôt que comme sous-module de monsite.
+
+Pour créer votre application, assurez-vous d’être dans le même répertoire que manage.py et saisissez cette commande :
+
+$ python manage.py startapp polls
+Cela va créer un répertoire polls, qui est structuré de la façon suivante :
+
+polls/
+    __init__.py
+    admin.py
+    apps.py
+    migrations/
+        __init__.py
+    models.py
+    tests.py
+    views.py
+Cette structure de répertoire accueillera l’application de sondage.
+
+Écriture d’une première vue¶
+Écrivons la première vue. Ouvrez le fichier polls/views.py et placez-y le code Python suivant :
+
+polls/views.py
+from django.http import HttpResponse
+
+
+def index(request):
+    return HttpResponse("Hello, world. You're at the polls index.")
+C’est la vue Django la plus simple possible. Pour appeler cette vue, il s’agit de l’associer à une URL, et pour cela nous avons besoin d’un URLconf.
+
+Pour créer un URLconf dans le répertoire polls, créez un fichier nommé urls.py. Votre répertoire d’application devrait maintenant ressembler à ceci :
+
+from django.conf.urls import url
+
+from . import views
+
+urlpatterns = [
+    url(r'^$', views.index, name='index'),
+]
