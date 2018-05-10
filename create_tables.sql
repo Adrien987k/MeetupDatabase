@@ -1,4 +1,3 @@
-
 CREATE TYPE MANAGER_TYPE_TYPE AS ENUM ('Moderator', 'Administrator');
 CREATE TYPE EVENT_STATUS_TYPE AS ENUM('cancelled', 'upcoming', 'past', 'proposed');
 CREATE TYPE VISIBILITY_TYPE AS ENUM('public', 'member', 'public_limited', 'members');
@@ -18,6 +17,18 @@ CREATE TABLE Category(
        category_id INTEGER PRIMARY KEY,
        category_name VARCHAR(50) NOT NULL,
        shortname VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE Member(
+	   member_group_id INTEGER SERIAL PRIMARY KEY,
+       member_id INTEGER,
+       group_id INTEGER,
+	   member_name VARCHAR(50) NOT NULL,
+       member_status USER_STATUS_TYPE NOT NULL,
+       joined TIMESTAMP NOT NULL,
+       bio TEXT,
+       city_name VARCHAR(50),
+       visited TIMESTAMP NOT NULL
 );
 
 CREATE TABLE Moderator_category(
@@ -46,18 +57,6 @@ CREATE TABLE Groups(
        visibility VISIBILITY_TYPE NOT NULL,
        who VARCHAR(50),
        photo_photo_link VARCHAR(200)
-);
-
-CREATE TABLE Member(
-       member_id INTEGER,
-       member_name VARCHAR(50) NOT NULL,
-       member_status USER_STATUS_TYPE NOT NULL,
-       joined TIMESTAMP NOT NULL,
-       bio TEXT,
-       city_name VARCHAR(50), -- REFERENCES City(city_name) ON DELETE SET NULL,
-       visited TIMESTAMP NOT NULL,
-       group_id INTEGER,
-       PRIMARY KEY (member_id,group_id)
 );
 
 CREATE TABLE Topic(
