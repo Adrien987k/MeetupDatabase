@@ -1,0 +1,35 @@
+BEGIN;
+--
+-- Create model Category
+--
+--
+-- Create model City
+--
+--
+-- Create model Event
+--
+--
+-- Create model Groups
+--
+--
+-- Create model GroupTopic
+--
+--
+-- Create model Member
+--
+--
+-- Create model ModeratorCategory
+--
+--
+-- Create model Topic
+--
+--
+-- Create model TopicFollowed
+--
+--
+-- Create model Venue
+--
+--
+-- Create model Websitemanager
+--
+COMMIT;

@@ -97,8 +97,8 @@ class Groups(models.Model):
 
 
 class Member(models.Model):
-    member_group_id = models.IntegerField(primary_key=True)
-    member_id = models.IntegerField(blank=True, null=True)
+    member_group_id = models.Field(primary_Key=True)
+    member_id = models.IntegerField(blanck=True, null=True)
     group_id = models.IntegerField(blank=True, null=True)
     member_name = models.CharField(max_length=50)
     member_status = models.TextField()  # This field type is a guess.
