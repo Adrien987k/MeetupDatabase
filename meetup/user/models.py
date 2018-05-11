@@ -13,10 +13,6 @@ class Category(models.Model):
     category_name = models.CharField(max_length=50)
     shortname = models.CharField(max_length=20)
 
-    class Meta:
-        managed = False
-        db_table = 'category'
-
 
 class City(models.Model):
     city_id = models.IntegerField()
@@ -26,101 +22,33 @@ class City(models.Model):
     longitude = models.FloatField()
     state = models.CharField(max_length=50, blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = 'city'
-
-
-class Event(models.Model):
-    event_id = models.CharField(primary_key=True, max_length=20)
-    group = models.ForeignKey(
-        'Groups', models.DO_NOTHING, blank=True, null=True)
-    created = models.DateTimeField()
-    description = models.TextField(blank=True, null=True)
-    duration = models.IntegerField()
-    photo_url = models.TextField(blank=True, null=True)
-    how_to_find_us = models.TextField(blank=True, null=True)
-    event_name = models.CharField(max_length=100)
-    event_status = models.TextField()  # This field type is a guess.
-    event_time = models.DateTimeField()
-    venue = models.ForeignKey(
-        'Venue', models.DO_NOTHING, blank=True, null=True)
-    updated = models.DateTimeField(blank=True, null=True)
-    visibility = models.TextField()  # This field type is a guess.
-    why = models.TextField(blank=True, null=True)
-    headcount = models.IntegerField(blank=True, null=True)
-    rating_average = models.FloatField(blank=True, null=True)
-    rating_count = models.IntegerField()
-    rsvp_limit = models.IntegerField()
-    maybe_rsvp_count = models.IntegerField()
-    yes_rsvp_count = models.IntegerField()
-    waitlist_count = models.IntegerField()
-    fee_accepts = models.TextField()  # This field type is a guess.
-    fee_amount = models.FloatField(blank=True, null=True)
-    fee_required = models.BooleanField()
-    repinned = models.NullBooleanField()
-
-    class Meta:
-        managed = False
-        db_table = 'event'
-
-
-class GroupTopic(models.Model):
-    group = models.ForeignKey(
-        'Groups', models.DO_NOTHING, blank=True, null=True)
-    topic = models.ForeignKey(
-        'Topic', models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'group_topic'
-
 
 class Groups(models.Model):
     group_id = models.IntegerField(primary_key=True)
-    created = models.DateTimeField()
-    category = models.ForeignKey(
-        Category, models.DO_NOTHING, blank=True, null=True)
-    description = models.TextField()
+    created = models.DateTimeField()    
+    description = models.TextField(null=True)
+    photo_photo_link = models.CharField(max_length=200, blank=True, null=True)
     join_mode = models.TextField()  # This field type is a guess.
+    group_name = models.CharField(max_length=100, blank=True, null=True)    
     organizer_id = models.IntegerField(blank=True, null=True)
-    group_name = models.CharField(max_length=100, blank=True, null=True)
-    city_name = models.ForeignKey(
-        City, models.DO_NOTHING, db_column='city_name', blank=True, null=True)
     visibility = models.TextField()  # This field type is a guess.
     who = models.CharField(max_length=50, blank=True, null=True)
-    photo_photo_link = models.CharField(max_length=200, blank=True, null=True)
+    category = models.ForeignKey(
+        'Category', models.DO_NOTHING, blank=True, null=True)
+    city_name = models.ForeignKey(
+        'City', models.DO_NOTHING, db_column='city_name', blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = 'groups'
 
 
 class Member(models.Model):
-    member_group_id = models.IntegerField(primary_key=True)
-    member_id = models.IntegerField(blank=True, null=True)
-    group_id = models.IntegerField(blank=True, null=True)
-    member_name = models.CharField(max_length=50)
-    member_status = models.TextField()  # This field type is a guess.
-    joined = models.DateTimeField()
-    bio = models.TextField(blank=True, null=True)
+    member_id = models.IntegerField()
+    bio = models.TextField()
     city_name = models.CharField(max_length=50, blank=True, null=True)
+    joined = models.DateTimeField()
+    member_name = models.CharField(max_length=50)    
+    member_status = models.TextField()  # This field type is a guess.
     visited = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'member'
-
-
-class ModeratorCategory(models.Model):
-    user = models.ForeignKey(Member, models.DO_NOTHING, blank=True, null=True)
-    category = models.ForeignKey(
-        Category, models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'moderator_category'
-
+    group_id = models.IntegerField(blank=True, null=True)
 
 class Topic(models.Model):
     topic_id = models.IntegerField(primary_key=True)
@@ -129,32 +57,27 @@ class Topic(models.Model):
     topic_name = models.CharField(max_length=50)
     parent_topic_id = models.IntegerField(blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = 'topic'
+        
+class GroupTopic(models.Model):
+    topic = models.ForeignKey(
+        'Topic', models.DO_NOTHING, blank=True, null=True)
+    group = models.ForeignKey(
+        'Groups', models.DO_NOTHING, blank=True, null=True)
 
 
 class TopicFollowed(models.Model):
     topic = models.ForeignKey(Topic, models.DO_NOTHING, blank=True, null=True)
     member = models.ForeignKey(
-        Member, models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'topic_followed'
+        'Member', models.DO_NOTHING, blank=True, null=True)
 
 
 class Venue(models.Model):
     venue_id = models.IntegerField(primary_key=True)
     address_1 = models.CharField(max_length=200, blank=True, null=True)
-    venue_name = models.CharField(max_length=200, blank=True, null=True)
     city_name = models.CharField(max_length=50, blank=True, null=True)
+    venue_name = models.CharField(max_length=200, blank=True, null=True)
     rating_average = models.FloatField()
     rating_count = models.FloatField()
-
-    class Meta:
-        managed = False
-        db_table = 'venue'
 
 
 class Websitemanager(models.Model):
@@ -162,7 +85,42 @@ class Websitemanager(models.Model):
     user_name = models.CharField(max_length=50)
     joined = models.DateTimeField()
     manager_type = models.TextField()  # This field type is a guess.
+        
 
-    class Meta:
-        managed = False
-        db_table = 'websitemanager'
+class ModeratorCategory(models.Model):
+    user_id = models.ForeignKey(Member, models.DO_NOTHING, blank=True, null=True)
+    category = models.ForeignKey(
+        'Category', models.DO_NOTHING, blank=True, null=True)
+        
+
+class Events(models.Model):
+    event_id = models.CharField(primary_key=True, max_length=20)
+    created = models.DateTimeField()
+    description = models.TextField(blank=True, null=True)
+    duration = models.IntegerField()
+    fee_accepts = models.TextField()  # This field type is a guess.
+    fee_amount = models.FloatField(blank=True, null=True)
+    fee_required = models.BooleanField()
+    group = models.ForeignKey(
+        'Groups', models.DO_NOTHING, blank=True, null=True)
+    headcount = models.IntegerField(blank=True, null=True)
+    how_to_find_us = models.TextField(blank=True, null=True)
+    maybe_rsvp_count = models.IntegerField()
+    event_name = models.CharField(max_length=100)
+    photo_url = models.TextField(blank=True, null=True)
+    rating_average = models.FloatField(blank=True, null=True)
+    rating_count = models.IntegerField()
+    rsvp_limit = models.IntegerField()
+    event_status = models.TextField()  # This field type is a guess.
+    event_time = models.DateTimeField()
+    updated = models.DateTimeField(blank=True, null=True)
+    venue = models.ForeignKey(
+        'Venue', models.DO_NOTHING, blank=True, null=True)
+    repinned = models.NullBooleanField()
+    visibility = models.TextField()  # This field type is a guess.
+    waitlist_count = models.IntegerField()
+    why = models.TextField(blank=True, null=True)
+    yes_rsvp_count = models.IntegerField()
+
+
+
