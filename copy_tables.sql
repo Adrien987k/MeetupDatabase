@@ -1,3 +1,5 @@
+\cd "/mnt/e/ENS\ Paris-Saclay/Cours/Bdd"
+
 \copy Category(category_id,category_name,shortname) FROM categories2.csv csv NULL 'not_found';
 
 \copy City(city_name,city_id,country,latitude,longitude,state) FROM cities2.csv csv NULL 'not_found';
