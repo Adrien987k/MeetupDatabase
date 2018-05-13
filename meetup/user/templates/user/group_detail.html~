@@ -1,0 +1,8 @@
+<h1>{{ group.group_name }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<ul>
+  <li><b>Description : </b>{{ group.description }}</li>
+  <li><b>Join mode</b>{{ group.join_mode }}</a></li>
+</ul>

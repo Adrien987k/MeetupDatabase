@@ -1,0 +1,10 @@
+<h1>{{ city.city_name }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<ul>
+  <li><b>Country : </b>{{ city.country }}</li>
+  <li><b>State : </b>{{ city.state }}</li>
+  <li><b>Population : </b>{{ members.count }} Members</li>
+  <li><b>Activity : </b>{{ groups.count }} Groups</li>
+</ul>

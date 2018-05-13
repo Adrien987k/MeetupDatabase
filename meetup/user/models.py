@@ -13,6 +13,9 @@ class Category(models.Model):
     category_name = models.CharField(max_length=50)
     shortname = models.CharField(max_length=20)
 
+    def __str__(self):
+        return self.category_name
+
 
 class City(models.Model):
     city_id = models.IntegerField()
@@ -21,6 +24,9 @@ class City(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     state = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.city_name
 
 
 class Groups(models.Model):
@@ -38,6 +44,9 @@ class Groups(models.Model):
     city_name = models.ForeignKey(
         'City', models.DO_NOTHING, db_column='city_name', blank=True, null=True)
 
+    def __str__(self):
+        return self.group_name
+
 
 
 class Member(models.Model):
@@ -50,12 +59,19 @@ class Member(models.Model):
     visited = models.DateTimeField()
     group_id = models.IntegerField(blank=True, null=True)
 
+    def __str__(self):
+        return self.member_name
+    
+
 class Topic(models.Model):
     topic_id = models.IntegerField(primary_key=True)
     description = models.TextField(blank=True, null=True)
     urlkey = models.CharField(max_length=50)
     topic_name = models.CharField(max_length=50)
     parent_topic_id = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.topic_name
 
         
 class GroupTopic(models.Model):
@@ -79,12 +95,18 @@ class Venue(models.Model):
     rating_average = models.FloatField()
     rating_count = models.FloatField()
 
+    def __str__(self):
+        return self.venue_name
+
 
 class Websitemanager(models.Model):
     user_id = models.IntegerField(primary_key=True)
     user_name = models.CharField(max_length=50)
     joined = models.DateTimeField()
     manager_type = models.TextField()  # This field type is a guess.
+
+    def __str__(self):
+        return self.user_name
         
 
 class ModeratorCategory(models.Model):
@@ -121,6 +143,9 @@ class Events(models.Model):
     waitlist_count = models.IntegerField()
     why = models.TextField(blank=True, null=True)
     yes_rsvp_count = models.IntegerField()
+
+    def __str__(self):
+        return self.event_name
 
 
 

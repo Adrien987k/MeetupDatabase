@@ -1,0 +1,10 @@
+{% if topic_list %}
+    <h1>Topic list</h1>
+    <ul>
+    {% for topic in topic_list %}
+        <li><a href="{% url 'topic_detail' topic.topic_id%}">{{ topic.topic_name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No topic available.</p>
+{% endif %}

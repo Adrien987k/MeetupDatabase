@@ -41,9 +41,8 @@ class Groups(models.Model):
 
 
 class Member(models.Model):
-    member_group_id = models.IntegerField(primary_key=True)
-    member_id = models.IntegerField(blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
+    member_id = models.IntegerField()
+    bio = models.TextField()
     city_name = models.CharField(max_length=50, blank=True, null=True)
     joined = models.DateTimeField()
     member_name = models.CharField(max_length=50)    
@@ -64,7 +63,6 @@ class GroupTopic(models.Model):
         'Topic', models.DO_NOTHING, blank=True, null=True)
     group = models.ForeignKey(
         'Groups', models.DO_NOTHING, blank=True, null=True)
-
 
 class TopicFollowed(models.Model):
     topic = models.ForeignKey(Topic, models.DO_NOTHING, blank=True, null=True)

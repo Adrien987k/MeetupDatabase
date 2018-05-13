@@ -1,0 +1,7 @@
+<h1>{{ category.category_name }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<ul>
+  <li><b>Activity : </b>{{ groups.count }} <a href="{% url 'group_index' 'category' category.category_id %}">Groups</a></li>
+</ul>
