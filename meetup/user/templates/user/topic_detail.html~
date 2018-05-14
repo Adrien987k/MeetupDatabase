@@ -9,5 +9,6 @@
   {% else %}
     <li><b>No parent topic</b></li>
   {% endif %}
-  <li><b>Activity : </b>{{ groups.count }} <a href="{% url 'group_index' 'topic' topic.topic_id %}"> Groups</li>
+  <li><b>Activity : </b>{{ group_count }} <a href="{% url 'group_index' 'topic' topic.topic_id %}"> Groups</a></li>
+  <li><b>Followers : </b>{{ member_count }} <a href="{% url 'member_index' 'topic' topic.topic_id 1 %}">Members</a></li>
 </ul>

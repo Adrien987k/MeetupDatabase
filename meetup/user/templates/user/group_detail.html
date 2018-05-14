@@ -16,5 +16,5 @@
   {% endif %}
   <li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' 'group' group.group_id 1 %}">Members</a></li>
   <li><a href="{% url 'event_index' 'group' group.group_id now %}"><b>Coming events</b></a></li>
-  <li><a href="{% url 'event_index' 'group' group.group_id now %}"><b>Past events</b></a></li>
+  <li><a href="{% url 'event_index' 'group' group.group_id prev %}"><b>Past events</b></a></li>
 </ul>

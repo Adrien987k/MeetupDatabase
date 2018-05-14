@@ -114,7 +114,6 @@ def GroupIndex(request, filt, filt_pk):
 
 def GroupDetail(request, group_id):
     group = get_object_or_404(Groups, pk=group_id)
-<<<<<<< HEAD
     organizers = Member.objects.filter(member_id=group.organizer_id)
     organizer = Member.objects.get(pk=1) # default
     if len(organizers) == 0:
@@ -149,7 +148,6 @@ def VenueIndex(request, filt, filt_pk, page):
         next_page = 1
     if page == 1:
         prev_page = page_max
-<<<<<<< HEAD
     venue_list = venue_list[1000*(page-1):min(1000*page,len(venue_list))]
     
     return render(request, 'user/venue_index.html', {'venue_list': venue_list, 'filt' : filt, 'filt_name' : filt_name, 'page' : page, 'filt_pk' : filt_pk, 'next_page' : next_page, 'prev_page' : prev_page})

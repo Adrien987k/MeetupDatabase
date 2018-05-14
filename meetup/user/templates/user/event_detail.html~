@@ -1,20 +1,31 @@
-<h1>{{ group.group_name }}</h1>
+<h1>{{ event.event_name }}</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+{% if event.repinned %}<p><strong>Warning ! Event repinned.</strong></p>{% endif %}
 
 <ul>
-  <li><b>Description : </b>{{ group.description }}</li>
-  <li><b>Related topics</b>
-    <ul>{% for topic in topics %}
-    <li><a href="{% url 'topic_detail' topic.topic_id %}">{{ topic.topic_name }}</a></li>
-    {% endfor %}</ul></li>
-  <li><b>Join mode : </b>{{ group.join_mode }}</a></li>
-  {% if have_org %}
-    <li><b>Organizer : </b><a href="{% url 'member_detail' group.organizer_id %}">{{ organizer.member_name }}</a></li>
-  {% else %}
-    <li><b>No organizer</b></li>
-  {% endif %}
-  <li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' 'group' group.group_id 1 %}">Members</a></li>
-  <li><a href="{% url 'event_index' 'group' group.group_id now 'com' %}"><b>Coming events</b></a></li>
-  <li><a href="{% url 'event_index' 'group' group.group_id now 'past' %}"><b>Past events</b></a></li>
+  <li><b>Description : </b>{{ event.description }}</li>
+  <li><b>Why ? : </b>{{ event.why }}</li>
+  <li><b>Status : </b>{{ event.status }}</li>
+  <li><b>Organizing group : </b><a href="{% url 'group_detail' event.group_id %}">{{ org_group.group_name }}</a></li>
+  <li><b>Duration : </b>{{ duration }} hours</li>
+  <li><b>Date and time : </b>{{ event.time }} hours</li>
+  <li><b>Venue : </b><a href="{% url 'venue_detail' event.venue_id %}">{{ venue.venue_name }}</a></li>
+  <li><b>How to find us : </b>{{ event.how_to_find_us }}</li>
+  <li><b>Rating : </b>{{ event.rating_average }} /5 ({{ evant.rating_count }} votes)</li>
 </ul>
+
+<h2>RSVP</h2>
+<ul>
+  <li><b>"Yes" answers : </b>{{ event.yes_rsvp_count }} {% if event.rsvp_limit != -1 %} ({{ event.rsvp_limit }}){% endif %}</li>
+  <li><b>"Maybe" answers : </b>{{ event.maybe_rsvp_count }}</li>
+  <li><b>Waiting answers : </b>{{ event.waitlist_count }}</li>
+  <li><b>Headcount : </b>{{ event.headcount }}</li>
+</ul>
+
+{% if event.fee_required %}
+<h2>Fee</h2>
+<ul> 
+  <li><b>Required amount : </b>{{ event.fee_amount }} ({{ event.fee_accepts }})</li>
+</ul>
+{% endif %}

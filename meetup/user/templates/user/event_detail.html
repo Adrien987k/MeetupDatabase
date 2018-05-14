@@ -1,7 +1,7 @@
 <h1>{{ event.event_name }}</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-{% if event.repinned %}<p><strong>Warning ! Event repinned.</strong></p>{% endif %}
+{% if event.repinned %}<font color="red" size=5>Warning ! Event repinned.</font>{% endif %}
 
 <ul>
   <li><b>Description : </b>{{ event.description }}</li>
@@ -9,10 +9,10 @@
   <li><b>Status : </b>{{ event.status }}</li>
   <li><b>Organizing group : </b><a href="{% url 'group_detail' event.group_id %}">{{ org_group.group_name }}</a></li>
   <li><b>Duration : </b>{{ duration }} hours</li>
-  <li><b>Date and time : </b>{{ event.time }} hours</li>
+  <li><b>Date and time : </b>{{ event.event_time }}</li>
   <li><b>Venue : </b><a href="{% url 'venue_detail' event.venue_id %}">{{ venue.venue_name }}</a></li>
   <li><b>How to find us : </b>{{ event.how_to_find_us }}</li>
-  <li><b>Rating : </b>{{ event.rating_average }} /5 ({{ evant.rating_count }} votes)</li>
+  <li><b>Rating : </b>{{ event.rating_average }} /5 ({{ rating_count }} votes)</li>
 </ul>
 
 <h2>RSVP</h2>
@@ -26,6 +26,17 @@
 {% if event.fee_required %}
 <h2>Fee</h2>
 <ul> 
-  <li><b>Required amount : </b>{{ event.fee_amount }} ({{ event.fee_accepts }})</li>
+  <li><b>Required amount : </b>${{ event.fee_amount }} ({{ event.fee_accepts }})</li>
 </ul>
+{% endif %}
+{% if past %}
+<h2>Vote for that event :</h2>
+<form action="{% url 'event_vote' event.event_id %}" method="post">
+{% csrf_token %}
+{% for choice in votes %}
+    <input type="radio" name="choice" id="rating{{ choice }}" value="{{ choice }}"/>
+    <label for="rating{{ choice }}">{{ choice }}</label><br />
+{% endfor %}
+<input type="submit" value="Vote" />
+</form>
 {% endif %}

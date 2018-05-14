@@ -4,7 +4,7 @@
 
 <ul>
   <li><b>Description : </b>{{ group.description }}</li>
-  <li><b>Related topics</b>
+  <li><b>Related topics : </b>
     <ul>{% for topic in topics %}
     <li><a href="{% url 'topic_detail' topic.topic_id %}">{{ topic.topic_name }}</a></li>
     {% endfor %}</ul></li>
@@ -15,4 +15,6 @@
     <li><b>No organizer</b></li>
   {% endif %}
   <li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' 'group' group.group_id 1 %}">Members</a></li>
+  <li><a href="{% url 'event_index' 'group' group.group_id now %}"><b>Coming events</b></a></li>
+  <li><a href="{% url 'event_index' 'group' group.group_id now %}"><b>Past events</b></a></li>
 </ul>

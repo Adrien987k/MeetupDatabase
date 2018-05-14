@@ -5,7 +5,8 @@
 <ul>
   <li><b>Country : </b>{{ city.country }}</li>
   <li><b>State : </b>{{ city.state }}</li>
-  <li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' 'city' city.city_name 1 %}"> Members</a></li>
-  <li><b>Activity : </b>{{ group_count }}  <a href="{% url 'group_index' 'city' city.city_name %}"> Groups</a></li>
-  <li><b>Meeting points : </b>{{ venue_count }}  <a href="{% url 'venue_index' 'city' city.city_name 1 %}"> Venues</a></li>
+  <li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' 'city' city.city_name 1 %}">Members</a></li>
+  <li><b>Gathering : </b>{{ group_count }}  <a href="{% url 'group_index' 'city' city.city_name %}">Groups</a></li>
+  <li><b>Meeting points : </b>{{ venue_count }}  <a href="{% url 'venue_index' 'city' city.city_name 1 %}">Venues</a></li>
+  <li><b>Activity : </b>{{ event_count }}  <a href="{% url 'event_index' 'city' city.city_name now %}">Events</a></li>
 </ul>
