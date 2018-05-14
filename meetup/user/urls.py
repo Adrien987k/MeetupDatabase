@@ -19,4 +19,7 @@ urlpatterns = [
     path('<str:filt>/<int:filt_pk>/<int:page>/member/',views.MemberIndex,name='member_index'),
     path('<str:filt>/<str:filt_pk>/<int:page>/member/',views.MemberIndex,name='member_index'),
     path('member/<int:member_id>/', views.MemberDetail, name='member_detail'),
+    path('<str:filt>/<int:filt_pk>/<str:date>/event/',views.EventIndex,name='event_index'),
+    path('<str:filt>/<str:filt_pk>/<str:date>/event/',views.EventIndex,name='event_index'),
+    path('event/<str:event_id>/', views.EventDetail, name='event_detail'),
 ]

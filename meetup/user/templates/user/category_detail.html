@@ -3,5 +3,5 @@
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 <ul>
-  <li><b>Activity : </b>{{ groups.count }} <a href="{% url 'group_index' 'category' category.category_id %}">Groups</a></li>
+  <li><b>Activity : </b>{{ group_count }} <a href="{% url 'group_index' 'category' category.category_id %}">Groups</a></li>
 </ul>

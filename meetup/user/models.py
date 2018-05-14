@@ -110,7 +110,7 @@ class Websitemanager(models.Model):
         
 
 class ModeratorCategory(models.Model):
-    user_id = models.ForeignKey(Member, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(Websitemanager, models.DO_NOTHING, blank=True, null=True)
     category = models.ForeignKey(
         'Category', models.DO_NOTHING, blank=True, null=True)
         
@@ -146,6 +146,9 @@ class Events(models.Model):
 
     def __str__(self):
         return self.event_name
+
+    def in_range(self,date1,date2):
+        return(self.event_time >= date1 and self.event_time < date2)
 
 
 

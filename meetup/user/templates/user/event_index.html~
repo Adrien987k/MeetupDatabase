@@ -1,0 +1,13 @@
+{% if member_list %}
+  <h1>Member list (page {{ page }})</h1>
+  {% if filt != "user"%} <h2> where {{ filt }} = {{ filt_name }}</h2> {% endif %}
+    <h1 align="right"><input type="button" value="Previous page" onclick=window.location.href="{% url 'member_index' filt filt_pk prev_page %}"></input>
+  <input type="button" value="Next page" onclick=window.location.href="{% url 'member_index' filt filt_pk next_page %}"></input></h1>
+    <ul>
+    {% for member in member_list %}
+      <li><a href="{% url 'member_detail' member.member_id%}">{{ member.member_name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Sorry, no member here.</p>
+{% endif %}

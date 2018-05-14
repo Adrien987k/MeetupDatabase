@@ -4,5 +4,15 @@
 
 <ul>
   <li><b>Description : </b>{{ group.description }}</li>
-  <li><b>Join mode</b>{{ group.join_mode }}</a></li>
+  <li><b>Related topics</b>
+    <ul>{% for topic in topics %}
+    <li><a href="{% url 'topic_detail' topic.topic_id %}">{{ topic.topic_name }}</a></li>
+    {% endfor %}</ul></li>
+  <li><b>Join mode : </b>{{ group.join_mode }}</a></li>
+  {% if have_org %}
+    <li><b>Organizer : </b><a href="{% url 'member_detail' group.organizer_id %}">{{ organizer.member_name }}</a></li>
+  {% else %}
+    <li><b>No organizer</b></li>
+  {% endif %}
+  <li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' 'group' group.group_id 1 %}">Members</a></li>
 </ul>
