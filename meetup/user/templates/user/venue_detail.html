@@ -1,0 +1,9 @@
+<h1>{{ venue.venue_name }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<ul>
+  <li><b>Address : </b>{{ venue.address_1 }}</li>
+  <li><b>City : </b><a href="{% url 'city_detail' venue.city_name %}">{{ venue.city_name }}</a></li>
+  <li><b>Rating : </b>{{ venue.rating_average }} /5 ({{ rating_count }} votes)</li>
+</ul>

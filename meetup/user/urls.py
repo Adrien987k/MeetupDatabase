@@ -13,4 +13,10 @@ urlpatterns = [
     path('<str:filt>/<int:filt_pk>/group/',views.GroupIndex,name='group_index'),
     path('<str:filt>/<str:filt_pk>/group/',views.GroupIndex,name='group_index'),
     path('group/<int:group_id>/', views.GroupDetail, name='group_detail'),
+    path('<str:filt>/<int:filt_pk>/<int:page>/venue/',views.VenueIndex,name='venue_index'),
+    path('<str:filt>/<str:filt_pk>/<int:page>/venue/',views.VenueIndex,name='venue_index'),
+    path('venue/<int:venue_id>/', views.VenueDetail, name='venue_detail'),
+    path('<str:filt>/<int:filt_pk>/<int:page>/member/',views.MemberIndex,name='member_index'),
+    path('<str:filt>/<str:filt_pk>/<int:page>/member/',views.MemberIndex,name='member_index'),
+    path('member/<int:member_id>/', views.MemberDetail, name='member_detail'),
 ]

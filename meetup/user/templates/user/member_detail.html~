@@ -1,0 +1,12 @@
+<h1>{{ member.member_name }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<ul>
+  <li><b>Biography : </b>{{ member.bio }}</li>
+  <li><b>City</b><a href="{% url 'city_dateil' member.city_name %}">{{ membr.city_name }}</li>
+  <li><b>Status : </b>{{ member.member_status }}</li>
+  <li><b>Join date : </b>{{ member.joined }}</li>
+  <li><b>Last connection : </b>{{ member.visited }}</li>
+  
+</ul>

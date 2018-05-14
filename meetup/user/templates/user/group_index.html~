@@ -1,10 +1,11 @@
 {% if group_list %}
-    <h1>Group list where {{ filt }} = {{ filt_pk }}</h1>
+  <h1>Group list</h1>
+  {% if filt != "user"%} <h2> where {{ filt }} = {{ filt_name }}</h2> {% endif %}
     <ul>
     {% for group in group_list %}
         <li><a href="{% url 'group_detail' group.group_id%}">{{ group.group_name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
-    <p>No group here.</p>
+    <p>Sorry, no group here.</p>
 {% endif %}

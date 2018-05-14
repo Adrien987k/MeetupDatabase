@@ -1,0 +1,11 @@
+{% if venue_list %}
+  <h1>Venue list</h1>
+  {% if filt != "user"%} <h2> where {{ filt }} = {{ filt_name }}</h2> {% endif %}
+    <ul>
+    {% for venue in venue_list %}
+      <li><a href="{% url 'venue_detail' venue.venue_id%}">{{ venue.venue_name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Sorry, no venue here.</p>
+{% endif %}

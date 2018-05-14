@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
@@ -42,7 +42,8 @@ def CityDetail(request, city_name):
     city = get_object_or_404(City, pk=city_name)
     members = Member.objects.filter(city_name = city_name)
     groups = Groups.objects.filter(city_name = city_name)
-    return render(request, 'user/city_detail.html', {'city': city, 'members' : members, 'groups' : groups})
+    venues = Venue.objects.filter(city_name = city_name)
+    return render(request, 'user/city_detail.html', {'city': city, 'members' : members, 'groups' : groups, 'venues' : venues})
 
 #*** Topics ***
 
@@ -80,7 +81,8 @@ def GroupIndex(request,filt,filt_pk):
         filt_name = Topic.objects.get(pk=filt_pk).topic_name
     else:
         group_list = Groups.objects.all()
-    return render(request, 'user/group_index.html', {'group_list': group_list, 'filt' : filt, 'filt_name' : filt_name})
+        filt_name = ""
+    return render(request, 'user/group_index.html', {'group_list': group_list.order_by('group_name'), 'filt' : filt, 'filt_name' : filt_name})
 
 def GroupDetail(request, group_id):
     group = get_object_or_404(Groups, pk=group_id)
@@ -88,4 +90,73 @@ def GroupDetail(request, group_id):
     topic_list = [q.topic_id for q in topic_query]
     topics = Topic.objects.filter(topic_id__in=topic_list)
     return render(request, 'user/group_detail.html', {'group': group, 'topics' : topics})
+
+#*** Venue ***
+
+def VenueIndex(request,filt,filt_pk,page):
+    if filt == "city":
+        venue_list = Venue.objects.filter(city_name=filt_pk)
+        filt_name = filt_pk
+    else:
+        venue_list = Venue.objects.all()
+        filt_name = ""
+
+    venue_list = venue_list.distinct('venue_name').order_by('venue_name')
+    page_max = len(venue_list) // 1000 + 1
+    next_page = page + 1
+    prev_page = page - 1
+    if page == page_max:
+        next_page = 1
+    if page == 1:
+        prev_page = page_max
+    venue_list = venue_list[1000*(page-1):1000*page]
+    
+    return render(request, 'user/venue_index.html', {'venue_list': venue_list, 'filt' : filt, 'filt_name' : filt_name, 'page' : page, 'filt_pk' : filt_pk, 'next_page' : next_page, 'prev_page' : prev_page})
+
+def VenueDetail(request, venue_id):
+    venue = get_object_or_404(Venue, pk=venue_id)
+    rating_count = int(venue.rating_count)
+    return render(request, 'user/venue_detail.html', {'venue': venue, 'rating_count' : rating_count})
+
+#*** Member ***
+
+def MemberIndex(request,filt,filt_pk,page):
+    if filt == "group":
+        member_list = Member.objects.filter(group_id=filt_pk) 
+        filt_name = Groups.objects.get(pk=filt_pk).group_name
+    elif filt == "city":
+        member_list = Member.objects.filter(city_name=filt_pk)
+        filt_name = filt_pk
+    elif filt == "topic":
+        member_query = TopicFollowed.objects.filter(topic_id=filt_pk)
+        member_id_list = [q.member_id for q in member_query]
+        member_list = Member.objects.filter(member_id__in=member_id_list)
+        filt_name = Topic.objects.get(pk=filt_pk).topic_name
+    else:
+        member_list = Member.objects.all()
+        filt_name = ""
+
+    member_list = member_list.distinct('member_name').order_by('member_name')
+    page_max = len(member_list) // 1000 + 1
+    next_page = page + 1
+    prev_page = page - 1
+    if page == page_max:
+        next_page = 1
+    if page == 1:
+        prev_page = page_max
+    member_list = member_list[10000*(page-1):10000*page]
+        
+    return render(request, 'user/member_index.html', {'member_list': member_list, 'filt' : filt, 'filt_name' : filt_name, 'filt_pk' : filt_pk, 'page' : page, 'next_page' : next_page, 'prev_page' : prev_page})
+
+def MemberDetail(request, member_id):
+    try:
+        memgrs = Member.objects.filter(member_id=member_id)
+        member = members[0]
+    except Member.DoesNotExist:
+        Http404("This member does not exist")
+    groups = Groups.objects.filter(group_id__in=[q.group_id for q in memgrs])
+    topic_query = TopicFollowed.objects.filter(member_id = member_id)
+    topic_list = [q.topic_id for q in topic_query]
+    topics = Topic.objects.filter(topic_id__in=topic_list)
+    return render(request, 'user/member_detail.html', {'member': member, 'groups' : groups, 'topics' : topics})
 

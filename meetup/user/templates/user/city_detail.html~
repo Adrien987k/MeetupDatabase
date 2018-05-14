@@ -2,3 +2,10 @@
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
+<ul>
+  <li><b>Country : </b>{{ city.country }}</li>
+  <li><b>State : </b>{{ city.state }}</li>
+  <li><b>Population : </b>{{ members.count }} Members</li>
+  <li><b>Activity : </b>{{ groups.count }}  <a href="{% url 'group_index' 'city' city.city_name %}"> Groups</a></li>
+  <li><b>Meeting points : </b>{{ venues.count }}  <a href="{% url 'venue_index' 'city' city.city_name %}"> Venues</li>
+</ul>
