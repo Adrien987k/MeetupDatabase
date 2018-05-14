@@ -79,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'meetup',
         'USER': 'postgres',
-        'PASSWORD': '5200Valrictin',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '5432'
     }

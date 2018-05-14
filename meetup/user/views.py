@@ -10,16 +10,29 @@ from .models import *
 from django.utils import timezone
 import datetime
 import pytz
+from .forms import AuthForm
 
 utc=pytz.UTC
 
-class Index(generic.ListView):
-    template_name = 'user/index.html'
+def Auth(request):
+    if request.method == 'POST':
+        form = AuthForm(request.POST)
+        # if form.is_valid():
+        # return HttpResponseRedirect('/user/')
+    else:
+        form = AuthForm()
+
+    return render(request, 'user/index.html', {'form': form})
+
+
+class UserIndex(generic.ListView):
+    template_name = 'user/user_index.html'
 
     def get_queryset(self):
-        return ()
+        return()
 
-#*** Category ***
+# *** Category ***
+
 
 class CategoryIndex(generic.ListView):
     template_name = 'user/category_index.html'
@@ -28,12 +41,14 @@ class CategoryIndex(generic.ListView):
     def get_queryset(self):
         return Category.objects.order_by('category_name')
 
+
 def CategoryDetail(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
     group_count = Groups.objects.filter(category_id = category_id).count()
     return render(request, 'user/category_detail.html', {'category': category, 'group_count' : group_count})
 
-#*** City ***
+# *** City ***
+
 
 class CityIndex(generic.ListView):
     template_name = 'user/city_index.html'
@@ -42,6 +57,7 @@ class CityIndex(generic.ListView):
     def get_queryset(self):
         return City.objects.order_by('city_name')
 
+
 def CityDetail(request, city_name):
     city = get_object_or_404(City, pk=city_name)
     member_count = Member.objects.filter(city_name = city_name).distinct('member_id').count()
@@ -49,7 +65,8 @@ def CityDetail(request, city_name):
     venue_count = Venue.objects.filter(city_name = city_name).count()
     return render(request, 'user/city_detail.html', {'city': city, 'member_count' : member_count, 'group_count' : group_count, 'venue_count' : venue_count})
 
-#*** Topics ***
+# *** Topics ***
+
 
 class TopicIndex(generic.ListView):
     template_name = 'user/topic_index.html'
@@ -57,6 +74,7 @@ class TopicIndex(generic.ListView):
 
     def get_queryset(self):
         return Topic.objects.order_by('topic_name')
+
 
 def TopicDetail(request, topic_id):
     topic = get_object_or_404(Topic, pk=topic_id)
@@ -73,9 +91,10 @@ def TopicDetail(request, topic_id):
     group_count = GroupTopic.objects.filter(topic_id = topic_id).count
     return render(request, 'user/topic_detail.html', {'topic': topic, 'parent_topic' : parent_topic, 'group_count' : group_count, 'have_parent' : have_parent, 'member_count' : member_count})
 
-#*** Groups ***
+# *** Groups ***
 
-def GroupIndex(request,filt,filt_pk):
+
+def GroupIndex(request, filt, filt_pk):
     if filt == "category":
         group_list = Groups.objects.filter(category_id=filt_pk)
         filt_name = Category.objects.get(pk=filt_pk).category_name
@@ -90,7 +109,8 @@ def GroupIndex(request,filt,filt_pk):
     else:
         group_list = Groups.objects.all()
         filt_name = ""
-    return render(request, 'user/group_index.html', {'group_list': group_list.order_by('group_name'), 'filt' : filt, 'filt_name' : filt_name})
+    return render(request, 'user/group_index.html', {'group_list': group_list.order_by('group_name'), 'filt': filt, 'filt_name': filt_name})
+
 
 def GroupDetail(request, group_id):
     group = get_object_or_404(Groups, pk=group_id)
@@ -109,9 +129,10 @@ def GroupDetail(request, group_id):
     topics = Topic.objects.filter(topic_id__in=topic_list)
     return render(request, 'user/group_detail.html', {'group': group, 'topics' : topics, 'organizer' : organizer,'have_org' : have_org, 'member_count' : member_count, 'now' : now})
 
-#*** Venue ***
+# *** Venue ***
 
-def VenueIndex(request,filt,filt_pk,page):
+
+def VenueIndex(request, filt, filt_pk, page):
     if filt == "city":
         venue_list = Venue.objects.filter(city_name=filt_pk)
         filt_name = filt_pk
@@ -134,13 +155,14 @@ def VenueIndex(request,filt,filt_pk,page):
 def VenueDetail(request, venue_id):
     venue = get_object_or_404(Venue, pk=venue_id)
     rating_count = int(venue.rating_count)
-    return render(request, 'user/venue_detail.html', {'venue': venue, 'rating_count' : rating_count})
+    return render(request, 'user/venue_detail.html', {'venue': venue, 'rating_count': rating_count})
 
-#*** Member ***
+# *** Member ***
 
-def MemberIndex(request,filt,filt_pk,page):
+
+def MemberIndex(request, filt, filt_pk, page):
     if filt == "group":
-        member_list = Member.objects.filter(group_id=filt_pk) 
+        member_list = Member.objects.filter(group_id=filt_pk)
         filt_name = Groups.objects.get(pk=filt_pk).group_name
     elif filt == "city":
         member_list = Member.objects.filter(city_name=filt_pk)
@@ -174,7 +196,7 @@ def MemberDetail(request, member_id):
     except Member.DoesNotExist:
         Http404("This member does not exist")
     groups = Groups.objects.filter(group_id__in=[q.group_id for q in memgrs])
-    topic_query = TopicFollowed.objects.filter(member_id = member_id)
+    topic_query = TopicFollowed.objects.filter(member_id=member_id)
     topic_list = [q.topic_id for q in topic_query]
     topics = Topic.objects.filter(topic_id__in=topic_list)
     return render(request, 'user/member_detail.html', {'member': member, 'groups' : groups, 'topics' : topics})

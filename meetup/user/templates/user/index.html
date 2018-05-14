@@ -1,11 +1,7 @@
-<h1>Meetup, share your passions</h1>
-    <ul>
-      <li><a href="{% url 'category_index' %}">Categories</a></li>
-      <li><a href="{% url 'city_index' %}">Cities</a></li>
-      <li><a href="{% url 'topic_index' %}">Topics</a></li>
-      <li><a href="user/all/group/">Groups</a></li>
-      <li><a href="user/all/1/venue/">Venues</a></li>
-      <li><a href="user/all/1/member/">Members</a></li>
-      <li><a href="user/all/2017-01-01 00:00:00/event/">Events</a></li>
-    </ul>
-
+<h1>Connect to Meetup</h1>
+<form method="post" action="{% url 'user_index' %}">
+  {% csrf_token %}
+  <!-- -->
+  {{ form }}
+  <input type="submit" value="Submit" />
+</form>
