@@ -1,0 +1,14 @@
+{% if error %}
+<h2>It is your only group, you cannot leave it</h2>
+{% else %}
+{% if is_member == 1 %}
+<h2>Successfully left</h2>
+{% else %}
+<h2>Successfully joined</h2>
+{% if group.who %}
+<h3>You're now part of {{ group.who }}</h3>
+{% endif %}
+{% endif %}
+{% endif %}
+
+<input type="button" value="Back" onclick=window.location.href="{% url 'group_detail' user_id group.group_id %}"></input>

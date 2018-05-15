@@ -1,0 +1,12 @@
+<h2>Are you sure to want to quit Meetup, {{ member.member_name }} ?</h2>
+
+<h2 align="left"><input type="button" value="No, just kidding" onclick=window.location.href="{% url 'member_detail' user_id user_id%}"></input></h2>
+<h2 align="left">
+  <form action="{% url 'member_deletion' user_id user_id %}" method="post">
+{% csrf_token %}
+<input type="submit" value="Sure!" />
+</form>
+</h2>
+
+
+

@@ -3,7 +3,7 @@
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 <ul>
-  <li><b>Activity : </b>{{ group_count }} <a href="{% url 'group_index' user_id 'category' category.category_id %}">Groups</a></li>
+  <li><b>Gathering : </b>{{ group_count }} <a href="{% url 'group_index' user_id 'category' category.category_id %}">Groups</a></li>
 </ul>
 
 <h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>

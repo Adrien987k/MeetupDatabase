@@ -1,11 +1,11 @@
-{% if wait %}
-<h2>Successfully added on the waitlist</h2>
+{% if not error %}
+{% if is_member ù}
+<h2>Successfully left</h2>
 {% else %}
-{% if yes == 1 %}
 <h2>Successfully joined</h2>
-<h3>See you soon {{ event.who }}</h3>
+<h3>Welcome {{ event.who }}</h3>
 {% else %}
-<h2>Successfully answered "Maybe"</h2>
+<h2>It is your first group, you cannot leave it</h2>
 {% endif %}
 {% endif %}
 

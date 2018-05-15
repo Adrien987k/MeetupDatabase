@@ -1,4 +1,5 @@
 <h1>Meetup, share your passions</h1>
+<h2>Hello, {{ user.member_name }}</h2>
 <ul>
     <li>
         <a href="{% url 'category_index' user.member_id %}">Categories</a>
@@ -16,9 +17,12 @@
         <a href="{% url 'venue_index' user.member_id 'userindex' 'all' 1 %}">Venues</a>
     </li>
     <li>
-        <a href="{% url 'member_index' user.member_id 'userindex' 'all' 1 %}">Members</a>
-    </li>
-    <li>
         <a href="{% url 'event_index' user.member_id 'userindex' 'all' now %}">Events</a>
     </li>
 </ul>
+<ul>
+    <li>
+        <a href="{% url 'member_detail' user.member_id user.member_id %}">My page</a>
+    </li>
+</ul>
+<input type="button" value="Logout" onclick=window.location.href="{% url 'user_login' %}"></input>

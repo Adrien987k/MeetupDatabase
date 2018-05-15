@@ -17,7 +17,7 @@
 
 <h2>RSVP</h2>
 <ul>
-  <li><b>"Yes" answers : </b>{{ event.yes_rsvp_count }} {% if event.rsvp_limit != -1 %} ({{ event.rsvp_limit }}){% endif %}</li>
+  <li><b>"Yes" answers : </b>{{ event.yes_rsvp_count }} {% if event.rsvp_limit != -1 %} (max : {{ event.rsvp_limit }}){% endif %}</li>
   <li><b>"Maybe" answers : </b>{{ event.maybe_rsvp_count }}</li>
   <li><b>Waiting answers : </b>{{ event.waitlist_count }}</li>
   <li><b>Headcount : </b>{{ event.headcount }}</li>
@@ -25,9 +25,9 @@
 {% if not past %}
 <form action="{% url 'event_join' user_id event.event_id %}" method="post">
 {% csrf_token %}
-    <input type="radio" name="choice" id="yes" value={{ yes }}/>
+    <input type="radio" name="yes" id="yes" value=1 />
     <label for="yes">Yes !</label><br />
-    <input type="radio" name="choice" id="maybe" value={{ maybe }}/>
+    <input type="radio" name="yes" id="maybe" value=0 />
     <label for="maybe">Maybe</label><br />
 <input type="submit" value="Join" />
 </form>

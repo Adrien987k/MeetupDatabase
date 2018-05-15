@@ -147,5 +147,8 @@ class Events(models.Model):
     def __str__(self):
         return self.event_name
 
+    def in_range(self,date1,date2):
+        return(self.event_time >= date1 and self.event_time < date2)
+
 
 

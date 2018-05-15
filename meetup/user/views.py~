@@ -355,20 +355,19 @@ def EventJoin(request, user_id, event_id):
     votes = range(0,6)
     
     try:
-        yes = request.POST['yes']
-        maybe = request.POST['maybe']
+        yes = int(request.POST['yes'])
     except KeyError:
         # Redisplay the question voting form.
         return render(request, 'user/event_detail.html', {'user_id' : user_id, 'event': event, 'duration' : duration, 'org_group' : org_group, 'have_org' : have_org, 'venue' : venue, 'have_venue' : have_venue, 'past' : past, 'rating_count' : rating_count, 'error_message' : "You didn't select a choice", 'votes' : votes})
     else:
         wait = False
-        if yes:
+        if yes == 1:
             if event.rsvp_limit != -1 and event.rsvp_limit <= event.yes_rsvp_count:
                 event.waitlist_count += 1
                 wait = True
             else:
                 event.yes_rsvp_count += 1
-        elif maybe:
+        else:
             event.maybe_rsvp_count += 1
         event.save()
         # Always return an HttpResponseRedirect after successfully dealing

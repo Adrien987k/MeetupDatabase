@@ -4,6 +4,9 @@
 
 <ul>
   <li><b>Description : </b>{{ group.description }}</li>
+  {% if have_photo %}
+  <li><a href="{{ group.photo_photo_link }}"><b>Photo</b></a></li>
+  {% endif %}
   <li><b>Related topics : </b>
     <ul>{% for topic in topics %}
     <li><a href="{% url 'topic_detail' user_id topic.topic_id %}">{{ topic.topic_name }}</a></li>
@@ -13,10 +16,25 @@
     <li><b>Organizer : </b><a href="{% url 'member_detail' user_id group.organizer_id %}">{{ organizer.member_name }}</a></li>
   {% else %}
     <li><b>No organizer</b></li>
-  {% endif %}
+    {% endif %}
+    <li><b>Average event rating : </b>{{ average }} ({{ count }} total votes)</li>
   <li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' user_id 'group' group.group_id 1 %}">Members</a></li>
   <li><a href="{% url 'event_index' user_id 'group' group.group_id now %}"><b>Coming events</b></a></li>
   <li><a href="{% url 'event_index' user_id 'group' group.group_id prev %}"><b>Past events</b></a></li>
 </ul>
+
+{% if is_member == 1 %}
+<h2>You are member of that group</h2>
+<form action="{% url 'group_join' user_id group.group_id is_member %}" method="post">
+{% csrf_token %}
+<input type="submit" value="Leave" />
+</form>
+{% else %}
+<h2>You are not member of that group</h2>
+<form action="{% url 'group_join' user_id group.group_id is_member %}" method="post">
+{% csrf_token %}
+<input type="submit" value="Join" />
+</form>
+{% endif %}
 
 <h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>

@@ -1,0 +1,7 @@
+<h1>Are you sure to want to quit Meetup, {{ member.member_name }} ?</h1>
+
+<h2 align="right"><input type="button" value="No, just kidding" onclick=window.location.href="{% url 'member_detail' user_id user_id%}"></input></h2>
+<h2 align="right"><input type="button" value="Sure!" onclick=window.location.href="{% url 'member_deletion' user_id user_id%}"></input></h2>
+
+
+
