@@ -1,0 +1,9 @@
+<h1>Connect to Meetup</h1>
+<form action="{% url 'user_index' {{ user_id }}%}" method="get">
+{% csrf_token %}
+    <input type="text" name="id" id="id" value={{ user_id }} />
+    <label for="id">Id</label><br />
+    <input type="text" name="name" id ="name" value={{ name }} />
+    <label for="name">Name</label><br />
+<input type="submit" value="Login" />
+</form>

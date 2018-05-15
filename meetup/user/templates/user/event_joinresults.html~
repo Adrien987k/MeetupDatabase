@@ -1,0 +1,10 @@
+{% if wait %}
+<h2>Successfully added on the waitlist</h2>
+{% else %}
+{% if yes %}
+<h2>Successfully joined</h2>
+<h3>See you soon {{ event.who }}</h3>
+{% endif %}
+<h2>Successfully answered "Maybe"</h2>
+
+<input type="button" value="Back" onclick=window.location.href="{% url 'event_detail' user_id event.event_id %}"></input>

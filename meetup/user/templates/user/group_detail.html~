@@ -6,15 +6,17 @@
   <li><b>Description : </b>{{ group.description }}</li>
   <li><b>Related topics : </b>
     <ul>{% for topic in topics %}
-    <li><a href="{% url 'topic_detail' topic.topic_id %}">{{ topic.topic_name }}</a></li>
+    <li><a href="{% url 'topic_detail' user_id topic.topic_id %}">{{ topic.topic_name }}</a></li>
     {% endfor %}</ul></li>
   <li><b>Join mode : </b>{{ group.join_mode }}</a></li>
   {% if have_org %}
-    <li><b>Organizer : </b><a href="{% url 'member_detail' group.organizer_id %}">{{ organizer.member_name }}</a></li>
+    <li><b>Organizer : </b><a href="{% url 'member_detail' user_id group.organizer_id %}">{{ organizer.member_name }}</a></li>
   {% else %}
     <li><b>No organizer</b></li>
   {% endif %}
-  <li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' 'group' group.group_id 1 %}">Members</a></li>
-  <li><a href="{% url 'event_index' 'group' group.group_id now %}"><b>Coming events</b></a></li>
-  <li><a href="{% url 'event_index' 'group' group.group_id now %}"><b>Past events</b></a></li>
+  <li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' user_id 'group' group.group_id 1 %}">Members</a></li>
+  <li><a href="{% url 'event_index' user_id 'group' group.group_id now %}"><b>Coming events</b></a></li>
+  <li><a href="{% url 'event_index' user_id 'group' group.group_id prev %}"><b>Past events</b></a></li>
 </ul>
+
+<h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>

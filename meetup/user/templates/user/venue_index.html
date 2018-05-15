@@ -1,11 +1,11 @@
 {% if venue_list %}
   <h1>Venue list (page {{ page }})</h1>
   {% if filt != "userindex"%} <h2> where {{ filt }} = {{ filt_name }}</h2> {% endif %}
-  <h1 align="right"><input type="button" value="Previous page" onclick=window.location.href="{% url 'venue_index' filt filt_pk prev_page %}"></input>
-  <input type="button" value="Next page" onclick=window.location.href="{% url 'venue_index' filt filt_pk next_page %}"></input></h1>
+  <h1 align="right"><input type="button" value="Previous page" onclick=window.location.href="{% url 'venue_index' user_id filt filt_pk prev_page %}"></input>
+  <input type="button" value="Next page" onclick=window.location.href="{% url 'venue_index' user_id filt filt_pk next_page %}"></input></h1>
     <ul>
     {% for venue in venue_list %}
-      <li><a href="{% url 'venue_detail' venue.venue_id%}">{{ venue.venue_name }}</a></li>
+      <li><a href="{% url 'venue_detail' user_id venue.venue_id %}">{{ venue.venue_name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

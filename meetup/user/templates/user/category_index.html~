@@ -2,7 +2,7 @@
     <h1>Category list</h1>
     <ul>
     {% for category in category_list %}
-        <li><a href="/user/category/{{ category.category_id }}/">{{ category.category_name }}</a></li>
+        <li><a href="{% url 'category_detail' category.category_id%}">{{ category.category_name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

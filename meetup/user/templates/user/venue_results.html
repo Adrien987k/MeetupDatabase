@@ -1,2 +1,2 @@
 <h2>Thank you for voting for {{ venue.venue_name }}</h2>
-<input type="button" value="Back" onclick=window.location.href="{% url 'venue_detail' venue.venue_id %}"></input>
+<input type="button" value="Back" onclick=window.location.href="{% url 'venue_detail' user_id venue.venue_id %}"></input>

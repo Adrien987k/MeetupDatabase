@@ -3,7 +3,7 @@
   {% if filt != "userindex"%} <h2> where {{ filt }} = {{ filt_name }}</h2> {% endif %}
     <ul>
     {% for group in group_list %}
-        <li><a href="{% url 'group_detail' group.group_id%}">{{ group.group_name }}</a></li>
+        <li><a href="{% url 'group_detail' user_id group.group_id%}">{{ group.group_name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

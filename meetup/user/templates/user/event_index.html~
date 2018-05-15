@@ -1,5 +1,5 @@
 <h1>Event list (from {{ date }} to {{ next_date }})</h1>
-  {% if filt != "user"%} <h2> where {{ filt }} = {{ filt_name }}</h2> {% endif %}
+  {% if filt != "userindex"%} <h2> where {{ filt }} = {{ filt_name }}</h2> {% endif %}
     <h1 align="right"><input type="button" value="Previous year" onclick=window.location.href="{% url 'event_index' filt filt_pk prev_date %}"></input>
       <input type="button" value="Next year" onclick=window.location.href="{% url 'event_index' filt filt_pk next_date %}"></input></h1>
     
