@@ -1,12 +1,12 @@
 <h1>Event list (from {{ date }} to {{ next_date }})</h1>
   {% if filt != "userindex"%} <h2> where {{ filt }} = {{ filt_name }}</h2> {% endif %}
-    <h1 align="right"><input type="button" value="Previous year" onclick=window.location.href="{% url 'event_index' filt filt_pk prev_date %}"></input>
-      <input type="button" value="Next year" onclick=window.location.href="{% url 'event_index' filt filt_pk next_date %}"></input></h1>
+    <h1 align="right"><input type="button" value="Previous year" onclick=window.location.href="{% url 'event_index' user_id filt filt_pk prev_date %}"></input>
+      <input type="button" value="Next year" onclick=window.location.href="{% url 'event_index' user_id filt filt_pk next_date %}"></input></h1>
     
 {% if event_list %}
     <ul>
     {% for event in event_list %}
-      <li><a href="{% url 'event_detail' event.event_id %}">{{ event.event_name }}</a></li>
+      <li><a href="{% url 'event_detail' user_id event.event_id %}">{{ event.event_name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

@@ -8,6 +8,8 @@
       <li><a href="{% url 'venue_detail' user_id venue.venue_id %}">{{ venue.venue_name }}</a></li>
     {% endfor %}
     </ul>
+
 {% else %}
-    <p>Sorry, no venue here.</p>
+<p>Sorry, no venue here.</p>
+<h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>
 {% endif %}

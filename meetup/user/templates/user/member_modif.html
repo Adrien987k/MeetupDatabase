@@ -1,0 +1,18 @@
+<h2> Here you can modify your profile </h2>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'member_modification' user_id user_id %}" method="post">
+{% csrf_token %}
+    
+    <input type="text" name="name" id="name" value={{ name }} {{member.member_name }} />
+    <label for="name">Name</label><br />
+    <input type="text" name="bio" id ="bio" value={{ bio }} "{{ member.bio }}" size="100" />
+    <label for="bio">Biography</label><br />
+    
+    {% for city in cities %}
+    <input type="radio" name="city_name" id="city{{ forloop.counter }}" value="{{ city.city_name }}"/>
+    <label for="city{{ forloop.counter }}">{% if city.city_name == member.city_name %}<b>{{ city.city_name }}</b>{% else %}{{ city.city_name }}{% endif %}</label><br />
+{% endfor %}
+<input type="submit" value="Save" />
+</form>

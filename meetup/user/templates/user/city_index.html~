@@ -2,7 +2,7 @@
     <h1>City list</h1>
     <ul>
     {% for city in city_list %}
-        <li><a href="{% url 'city_detail' city.pk%}">{{ city.city_name }}</a></li>
+        <li><a href="{% url 'city_detail' user_id city.pk%}">{{ city.city_name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

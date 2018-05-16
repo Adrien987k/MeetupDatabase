@@ -15,4 +15,18 @@
   <li><a href="{% url 'event_index' user_id 'group' topic.topic_id prev %}"><b>Past events</b></a></li>
 </ul>
 
+{% if follows == 1 %}
+<h2>You follow that topic</h2>
+<form action="{% url 'topic_follow' user_id topic.topic_id follows %}" method="post">
+{% csrf_token %}
+<input type="submit" value="Unfollow" />
+</form>
+{% else %}
+<h2>You don't follow that topic</h2>
+<form action="{% url 'topic_follow' user_id topic.topic_id follows %}" method="post">
+{% csrf_token %}
+<input type="submit" value="Follow" />
+</form>
+{% endif %}
+
 <h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>

@@ -1,0 +1,7 @@
+{% if follows == 1 %}
+<h2>Successfully unfollowed</h2>
+{% else %}
+<h2>Successfully followed</h2>
+{% endif %}
+
+<input type="button" value="Back" onclick=window.location.href="{% url 'topic_detail' user_id topic.topic_id %}"></input>

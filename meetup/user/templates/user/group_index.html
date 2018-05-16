@@ -6,6 +6,8 @@
         <li><a href="{% url 'group_detail' user_id group.group_id%}">{{ group.group_name }}</a></li>
     {% endfor %}
     </ul>
+
 {% else %}
-    <p>Sorry, no group here.</p>
+<p>Sorry, no group here.</p>
+<h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>
 {% endif %}

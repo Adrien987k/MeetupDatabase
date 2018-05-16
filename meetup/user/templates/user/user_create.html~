@@ -1,0 +1,18 @@
+<h2> Here you can create your profile </h2>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'user_creation' %}" method="post">
+{% csrf_token %}
+    
+    <input type="text" name="name" id="name" value={{ name }} "" />
+    <label for="name">Name</label><br />
+    <input type="text" name="bio" id ="bio" value={{ bio }} "" size="100" />
+    <label for="bio">Biography</label><br />
+    
+    {% for city in cities %}
+    <input type="radio" name="city_name" id="city{{ forloop.counter }}" value="{{ city.city_name }}"/>
+    <label for="city{{ forloop.counter }}">{{ city.city_name }}</label><br />
+{% endfor %}
+<input type="submit" value="Save" />
+</form>

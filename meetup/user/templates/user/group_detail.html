@@ -1,3 +1,4 @@
+{% if visible %}
 <h1>{{ group.group_name }}</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
@@ -30,11 +31,17 @@
 <input type="submit" value="Leave" />
 </form>
 {% else %}
+{% if not closed %}
 <h2>You are not member of that group</h2>
 <form action="{% url 'group_join' user_id group.group_id is_member %}" method="post">
 {% csrf_token %}
 <input type="submit" value="Join" />
 </form>
 {% endif %}
+{% endif %}
 
 <h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>
+
+{% else %}
+Sorry, you are not allowed to see this
+{% endif %}

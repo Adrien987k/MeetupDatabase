@@ -5,6 +5,8 @@
         <li><a href="{% url 'topic_detail' user_id topic.topic_id%}">{{ topic.topic_name }}</a></li>
     {% endfor %}
     </ul>
+
 {% else %}
-    <p>No topic available.</p>
+<p>No topic available.</p>
+<h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>
 {% endif %}

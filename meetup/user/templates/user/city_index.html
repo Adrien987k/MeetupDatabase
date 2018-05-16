@@ -5,6 +5,8 @@
         <li><a href="{% url 'city_detail' user_id city.pk%}">{{ city.city_name }}</a></li>
     {% endfor %}
     </ul>
+
 {% else %}
-    <p>No city available.</p>
+<p>No city available.</p>
+<h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>
 {% endif %}

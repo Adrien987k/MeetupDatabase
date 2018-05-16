@@ -4,9 +4,17 @@
 {% if is_member == 1 %}
 <h2>Successfully left</h2>
 {% else %}
+{% if wait %}
+<h2>Request send to organizer, waiting for approval</h2>
+{% else %}
+{% if closed %}
+<h2>Sorry, you are not allowed to join that group, it is closed</h2>
+{% else %}
 <h2>Successfully joined</h2>
 {% if group.who %}
 <h3>You're now part of {{ group.who }}</h3>
+{% endif %}
+{% endif %}
 {% endif %}
 {% endif %}
 {% endif %}

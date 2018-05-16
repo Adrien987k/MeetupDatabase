@@ -1,0 +1,4 @@
+<h2>Successfully create</h2>
+<h3>Welcome to Meetup</h3>
+
+<h2 align="left"><input type="button" value="My profile" onclick=window.location.href="{% url 'member_detail' user_id user_id %}"></input></h2>

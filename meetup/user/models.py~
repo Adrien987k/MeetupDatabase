@@ -47,6 +47,20 @@ class Groups(models.Model):
     def __str__(self):
         return self.group_name
 
+    def rating(self):
+        events = Events.objects.filter(group_id=self.group_id)
+        average = 0
+        sum = 0
+        for event in events:
+            count = event.rating_count
+            if count == -1:
+                count = 0
+            average += event.rating_average * count
+            sum += count
+        if sum != 0:
+            average = average/sum
+        return(average, sum)
+
 
 
 class Member(models.Model):

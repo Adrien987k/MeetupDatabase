@@ -5,6 +5,8 @@
         <li><a href="{% url 'category_detail' user_id category.category_id %}">{{ category.category_name }}</a></li>
     {% endfor %}
     </ul>
+
 {% else %}
-    <p>No category available.</p>
+<p>No category available.</p>
+<h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>
 {% endif %}

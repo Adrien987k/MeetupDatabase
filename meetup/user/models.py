@@ -97,8 +97,7 @@ class GroupTopic(models.Model):
 
 class TopicFollowed(models.Model):
     topic = models.ForeignKey(Topic, models.DO_NOTHING, blank=True, null=True)
-    member = models.ForeignKey(
-        'Member', models.DO_NOTHING, blank=True, null=True)
+    member_id = models.IntegerField()
 
 
 class Venue(models.Model):
