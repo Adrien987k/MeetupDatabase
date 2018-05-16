@@ -4,16 +4,18 @@
 
 <ul>
   <li><b>Biography : </b>{{ member.bio }}</li>
-  <li><b>City : </b><a href="{% url 'city_detail' member.city_name %}">{{ member.city_name }}</a></li>
+  <li><b>City : </b><a href="{% url 'city_detail' user_id member.city_name %}">{{ member.city_name }}</a></li>
   <li><b>Status : </b>{{ member.member_status }}</li>
   <li><b>Join date : </b>{{ member.joined }}</li>
   <li><b>Last connection : </b>{{ member.visited }}</li>
   <li><b>Followed topics : </b>
     <ul>{% for topic in topics %}
-    <li><a href="{% url 'topic_detail' topic.topic_id %}">{{ topic.topic_name }}</a></li>
+    <li><a href="{% url 'topic_detail' user_id topic.topic_id %}">{{ topic.topic_name }}</a></li>
     {% endfor %}</ul></li>
   <li><b>Joined groups : </b>
     <ul>{% for group in groups %}
-    <li><a href="{% url 'group_detail' group.group_id %}">{{ group.group_name }}</a></li>
+    <li><a href="{% url 'group_detail' user_id group.group_id %}">{{ group.group_name }}</a></li>
     {% endfor %}</ul></li>
 </ul>
+
+<h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>

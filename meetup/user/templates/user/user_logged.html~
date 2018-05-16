@@ -1,0 +1,3 @@
+<h2>Successfully logged</h2>
+
+<input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input>

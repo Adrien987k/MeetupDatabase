@@ -14,6 +14,17 @@ from .forms import AuthForm
 
 utc=pytz.UTC
 
+def esc(word):
+    """
+    Erases the potential '\' at the beginning of word
+    """
+    if len(word) != 0 and word[0] == '/':
+        return(word[1:len(word)])
+    else:
+        return(word)
+
+#*** User ***
+
 def Auth(request):
     return render(request, 'user/index.html', {})
 
@@ -21,14 +32,8 @@ def UserLogin(request):
     return render(request, 'user/user_login.html', {})
 
 def UserLogged(request):
-    user_id = request.GET['id'][1:]
-    if user_id[0] == '\\':
-        user_id = int(user_id[1:])
-    else:
-        user_id = int(user_id)
-    name = request.GET['name'][1:]
-    if name[0] == '\\':
-        name = name[1:]
+    user_id = int(esc(request.GET['id']))
+    name = esc(request.GET['name'])
     try:
         memgrs = Member.objects.filter(member_id=user_id)
         user = memgrs[0]
@@ -42,12 +47,15 @@ def UserLogged(request):
 
 
 def UserIndex(request, user_id):
-    try:
-        memgrs = Member.objects.filter(member_id=user_id)
+    memgrs = Member.objects.filter(member_id=user_id)
+    if len(memgrs) == 0:
+        raise Http404("This member does not exist")
+    else:
         user = memgrs[0]
-    except Member.DoesNotExist:
-        Http404("This member does not exist")
-    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    now = datetime.datetime.now()
+    user.visited = now.replace(tzinfo=utc)
+    user.save()
+    now = now.strftime("%Y-%m-%d %H:%M:%S")
     return render(request, 'user/user_index.html', {'now' : now, 'user' : user})
 
 
@@ -132,6 +140,8 @@ def GroupDetail(request, user_id, group_id):
     group = get_object_or_404(Groups, pk=group_id)
     organizers = Member.objects.filter(member_id=group.organizer_id)
     organizer = Member.objects.get(pk=1) # default
+    average,count = group.rating()
+    have_photo = Groups.objects.filter(pk=group_id,photo_photo_link__isnull=False).exists()
     if len(organizers) == 0:
         have_org = False
     else:
@@ -141,11 +151,38 @@ def GroupDetail(request, user_id, group_id):
     now = datetime.datetime.now()
     prev = (now-datetime.timedelta(days=365)).strftime("%Y-%m-%d %H:%M:%S")
     now = now.strftime("%Y-%m-%d %H:%M:%S")
-    member_count = Member.objects.filter(group_id=group_id).distinct('member_id').count()
+    memgrs = Member.objects.filter(group_id=group_id)
+    is_member = 0
+    if memgrs.filter(member_id=user_id).exists():
+        is_member = 1
+    member_count = memgrs.distinct('member_id').count()
     topic_query = GroupTopic.objects.filter(group_id = group_id)
     topic_list = [q.topic_id for q in topic_query]
     topics = Topic.objects.filter(topic_id__in=topic_list)
-    return render(request, 'user/group_detail.html', {'user_id' : user_id, 'group': group, 'topics' : topics, 'organizer' : organizer,'have_org' : have_org, 'member_count' : member_count, 'now' : now, 'prev' : prev})
+    return render(request, 'user/group_detail.html', {'user_id' : user_id, 'group': group, 'topics' : topics, 'organizer' : organizer,'have_org' : have_org, 'member_count' : member_count, 'now' : now, 'prev' : prev, 'is_member' : is_member, 'average' : average, 'count' : count, 'have_photo' : have_photo})
+
+def GroupJoin(request, user_id, group_id, is_member):
+    group = get_object_or_404(Groups, pk=group_id)
+    now = datetime.datetime.now().replace(tzinfo=utc)
+    error = False
+    if is_member == 1:
+        mems = Member.objects.filter(member_id=user_id)
+        memgrs = mems.filter(group_id=group_id)
+        if len(memgrs) == 0:
+            raise Http404("This user isn't member of this group")
+        else:
+            if len(mems) == 1:
+                error = True
+            else:
+                memgrs.delete()
+    else:
+        memgrs = Member.objects.filter(member_id=user_id)
+        if len(memgrs) == 0:
+            Http404("This user doesn't exist")
+        else:
+            m = memgrs[0]
+            Member.objects.create(member_id=user_id, city_name=m.city_name, joined=m.joined, member_name=m.member_name, member_status=m.member_status, visited=now, group_id=group_id)
+    return render(request, 'user/group_joinresults.html', {'user_id' : user_id, 'group' : group, 'is_member' : is_member, 'error' : error})
 
 # *** Venue ***
 
@@ -235,16 +272,37 @@ def MemberIndex(request, user_id, filt, filt_pk, page):
 
 
 def MemberDetail(request, user_id, member_id):
-    try:
-        memgrs = Member.objects.filter(member_id=member_id)
+    memgrs = Member.objects.filter(member_id=member_id)
+    if len(memgrs) == 0:
+        raise Http404("This member does not exist")
+    else:
         member = memgrs[0]
-    except Member.DoesNotExist:
-        Http404("This member does not exist")
     groups = Groups.objects.filter(group_id__in=[q.group_id for q in memgrs])
     topic_query = TopicFollowed.objects.filter(member_id=member_id)
     topic_list = [q.topic_id for q in topic_query]
     topics = Topic.objects.filter(topic_id__in=topic_list)
     return render(request, 'user/member_detail.html', {'user_id' : user_id, 'member': member, 'groups' : groups, 'topics' : topics})
+
+def MemberDelete(request, user_id, member_id):
+    if member_id != user_id:
+        raise Http404("You are not allowed to do this")
+    memgrs = Member.objects.filter(member_id=user_id)
+    if len(memgrs) == 0:
+        raise Http404("This member does not exist")
+    else:
+        member = memgrs[0]
+    return render(request, 'user/member_delete.html', {'user_id' : user_id, 'member': member})
+
+def MemberDeletion(request, user_id, member_id):
+    if member_id != user_id:
+        raise Http404("You are not allowed to do this")
+    memgrs = Member.objects.filter(member_id=user_id)
+    if len(memgrs) == 0:
+        raise Http404("This member does not exist")
+    else:
+        memgrs.delete()
+    
+    return render(request, 'user/member_deleted.html', {})
 
 #*** Event ***
 
