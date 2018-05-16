@@ -31,11 +31,11 @@ class City(models.Model):
 
 class Groups(models.Model):
     group_id = models.IntegerField(primary_key=True)
-    created = models.DateTimeField()    
+    created = models.DateTimeField()
     description = models.TextField(null=True)
     photo_photo_link = models.CharField(max_length=200, blank=True, null=True)
     join_mode = models.TextField()  # This field type is a guess.
-    group_name = models.CharField(max_length=100, blank=True, null=True)    
+    group_name = models.CharField(max_length=100, blank=True, null=True)
     organizer_id = models.IntegerField(blank=True, null=True)
     visibility = models.TextField()  # This field type is a guess.
     who = models.CharField(max_length=50, blank=True, null=True)
@@ -48,20 +48,19 @@ class Groups(models.Model):
         return self.group_name
 
 
-
 class Member(models.Model):
     member_id = models.IntegerField()
     bio = models.TextField()
     city_name = models.CharField(max_length=50, blank=True, null=True)
     joined = models.DateTimeField()
-    member_name = models.CharField(max_length=50)    
+    member_name = models.CharField(max_length=50)
     member_status = models.TextField()  # This field type is a guess.
     visited = models.DateTimeField()
     group_id = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.member_name
-    
+
 
 class Topic(models.Model):
     topic_id = models.IntegerField(primary_key=True)
@@ -73,7 +72,7 @@ class Topic(models.Model):
     def __str__(self):
         return self.topic_name
 
-        
+
 class GroupTopic(models.Model):
     topic = models.ForeignKey(
         'Topic', models.DO_NOTHING, blank=True, null=True)
@@ -107,13 +106,14 @@ class Websitemanager(models.Model):
 
     def __str__(self):
         return self.user_name
-        
+
 
 class ModeratorCategory(models.Model):
-    user = models.ForeignKey(Websitemanager, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(
+        Websitemanager, models.DO_NOTHING, blank=True, null=True)
     category = models.ForeignKey(
         'Category', models.DO_NOTHING, blank=True, null=True)
-        
+
 
 class Events(models.Model):
     event_id = models.CharField(primary_key=True, max_length=20)
@@ -147,8 +147,5 @@ class Events(models.Model):
     def __str__(self):
         return self.event_name
 
-    def in_range(self,date1,date2):
+    def in_range(self, date1, date2):
         return(self.event_time >= date1 and self.event_time < date2)
-
-
-
