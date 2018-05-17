@@ -1,3 +1,4 @@
+{% if visible %}
 <h1>{{ group.group_name }}</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
@@ -40,3 +41,7 @@
 {% endif %}
 
 <h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>
+
+{% else %}
+Sorry, you are not allowed to see this
+{% endif %}

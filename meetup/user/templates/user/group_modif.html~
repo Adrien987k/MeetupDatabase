@@ -1,0 +1,39 @@
+<h2> Here you can modify your group</h2>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'group_modification' user_id group.group_id %}" method="post">
+{% csrf_token %}
+    
+    <b>Name : </b><input type="text" name="name" id="name" value="{{ name }}" "{{group.group_name }}" />
+    <br/><b>Description : </b><input type="text" name="description" id ="desc" value="{{ description }}" "{{ group.description }}" size="100" />
+    <br/><b>Name of the members of that group : </b><input type="text" name="who" id ="who" value="{{ who }}" "{{ group.who }}" />
+    <br/><b>Photo link : </b><input type="text" name="photo" id ="photo" value="{{ photo }}" "{{ group.photo_photo_link" size="100" />
+
+    <br/><b>Visibility :</b><br/>
+    <input type="radio" name="visibility" id ="public" value="public" "" />
+    <label for="public">{% if group.visibility == "public" %}<b>Public</b>{% else %}Public{% endif %}</label><br />
+    <input type="radio" name="visibility" id ="members" value="members" "" />
+    <label for="members">{% if group.visibility == "members" %}<b>Members</b>{% else %}Members{% endif %}</label><br />
+
+    <br/><b>Join mode :</b><br/>
+    <input type="radio" name="join_mode" id ="open" value="open" "" />
+    <label for="open">{% if group.join_mode == "open" %}<b>Open</b>{% else %}Open{% endif %}</label><br />
+    <input type="radio" name="join_mode" id ="approval" value="approval" "" />
+    <label for="approval">{% if group.join_mode == "approval" %}<b>Approval</b>{% else %}Approval{% endif %}</label><br />
+    <input type="radio" name="join_mode" id ="closed" value="closed" "" />
+    <label for="closed">{% if group.join_mode == "closed" %}<b>Closed</b>{% else %}Closed{% endif %}</label><br />
+
+    <br/><b>Harbour city : </b><br/>
+    {% for city in cities %}
+    <input type="radio" name="city_name" id="city{{ forloop.counter }}" value="{{ city.city_name }}"/>
+    <label for="city{{ forloop.counter }}">{% if city.city_name == group.city_name %}<b>{{ city.city_name }}</b>{% else %}{{ city.city_name }}{% endif %}</label><br />
+{% endfor %}
+
+    <br/><b>Main category :</b><br/>
+    {% for category in categories %}
+    <input type="radio" name="category_id" id="category{{ forloop.counter }}" value="{{ category.category_id }}" />
+    <label for="category{{ forloop.counter }}">{% if category.category_id == group.category_id %}<b>{{ category.ctaegory_name }}</b>{% else %}{{ category.category_name }}{% endif %}</label><br />
+{% endfor %}
+<br/><input type="submit" value="Create" />
+</form>

@@ -1,0 +1,39 @@
+<h2> Here you can create a group </h2>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'group_creation' user_id user_id %}" method="post">
+{% csrf_token %}
+    
+    <b>Name : </b><input type="text" name="name" id="name" value="{{ name }}" "" />
+    <br/><b>Description : </b><input type="text" name="description" id ="desc" value="{{ description }}" "" size="100" />
+    <br/><b>Name of the members of that group : </b><input type="text" name="who" id ="who" value="{{ who }}" "" />
+    <br/><b>Photo link : </b><input type="text" name="photo" id ="photo" value="{{ photo }}" "None" size="100" />
+
+    <br/><b>Visibility :</b><br/>
+    <input type="radio" name="visibility" id ="public" value="public" "" />
+    <label for="public">Public</label><br />
+    <input type="radio" name="visibility" id ="members" value="members" "" />
+    <label for="members">Members</label><br />
+
+    <br/><b>Join mode :</b><br/>
+    <input type="radio" name="join_mode" id ="open" value="open" "" />
+    <label for="open">Open</label><br />
+    <input type="radio" name="join_mode" id ="approval" value="approval" "" />
+    <label for="approval">Approval</label><br />
+    <input type="radio" name="join_mode" id ="closed" value="closed" "" />
+    <label for="closed">Closed</label><br />
+
+    <br/><b>Harbour city : </b><br/>
+    {% for city in cities %}
+    <input type="radio" name="city_name" id="city{{ forloop.counter }}" value="{{ city.city_name }}"/>
+    <label for="city{{ forloop.counter }}">{{ city.city_name }}</label><br />
+{% endfor %}
+
+    <br/><b>Main category :</b><br/>
+    {% for category in categories %}
+    <input type="radio" name="category_id" id="category{{ forloop.counter }}" value="{{ category.category_id }}" />
+    <label for="category{{ forloop.counter }}">{{ category.category_name }}</label><br />
+{% endfor %}
+<br/><input type="submit" value="Create" />
+</form>

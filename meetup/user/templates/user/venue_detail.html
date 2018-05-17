@@ -13,7 +13,7 @@
 {% csrf_token %}
 {% for choice in votes %}
     <input type="radio" name="choice" id="rating{{ choice }}" value="{{ choice }}"/>
-    <label for="rating{{ choice }}">{{ choice }}</label><br />
+    <label for="rating{{ choice }}">{{ choice }}</label>
 {% endfor %}
 <input type="submit" value="Vote" />
 </form>

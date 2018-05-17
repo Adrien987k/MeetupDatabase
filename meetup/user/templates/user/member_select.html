@@ -1,0 +1,17 @@
+<h2>Select the topics you wanna follow</h2>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'member_selection' user_id user_id %}" method="post">
+  {% csrf_token %}
+  {% for topic in followed %}
+  <input type="checkbox" name="topic" id="followed{{ forloop.counter }}" value="{{ topic.topic_id }}" checked "" />
+  <label for="followed{{ forloop.counter }}">{{ topic.topic_name }}</label><br/>
+  {% endfor %}
+  
+  {% for topic in topics %}
+  <input type="checkbox" name="topic" id="topic{{ forloop.counter }}" value="{{ topic.topic_id }}" "" />
+  <label for="topic{{ forloop.counter }}">{{ topic.topic_name }}</label><br/>
+  {% endfor %}
+<br/><input type="submit" value="Select" />
+</form>

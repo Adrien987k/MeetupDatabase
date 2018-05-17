@@ -3,6 +3,7 @@
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 {% if user_id == member.member_id %}
+<h2 align="right"><input type="button" value="Modify profile" onclick=window.location.href="{% url 'member_modif' user_id user_id %}"></input></h2>
 <h2 align="right"><input type="button" value="Delete profile" onclick=window.location.href="{% url 'member_delete' user_id user_id %}"></input></h2>
 {% endif %}
 

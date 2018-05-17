@@ -4,12 +4,12 @@
 
 <ul>
   <li><b>Address : </b>{{ venue.address_1 }}</li>
-  <li><b>City : </b><a href="{% url 'city_detail' venue.city_name %}">{{ venue.city_name }}</a></li>
-  <li><b>Activity : </b>{{ event_count }} <a href="{% url 'event_index' 'venue' venue.venue_id now %}">events</a></li>
+  <li><b>City : </b><a href="{% url 'city_detail' user_id venue.city_name %}">{{ venue.city_name }}</a></li>
+  <li><b>Activity : </b>{{ event_count }} <a href="{% url 'event_index' user_id 'venue' venue.venue_id now %}">events</a></li>
   <li><b>Rating : </b>{{ venue.rating_average }} /5 ({{ rating_count }} votes)</li>
 </ul>
 <h2>Vote for that venue :</h2>
-<form action="{% url 'venue_vote' venue.venue_id %}" method="post">
+<form action="{% url 'venue_vote' user_id venue.venue_id %}" method="post">
 {% csrf_token %}
 {% for choice in votes %}
     <input type="radio" name="choice" id="rating{{ choice }}" value="{{ choice }}"/>
@@ -17,3 +17,5 @@
 {% endfor %}
 <input type="submit" value="Vote" />
 </form>
+
+<h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>

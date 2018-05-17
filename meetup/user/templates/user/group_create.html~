@@ -1,0 +1,34 @@
+<h2> Here you can create a group </h2>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'group_creation' %}" method="post">
+{% csrf_token %}
+    
+    <input type="text" name="name" id="name" value={{ name }} "" />
+    <label for="name">Name</label><br />
+    <input type="text" name="description" id ="desc" value={{ description }} "" size="100" />
+    <label for="desc">Description</label><br />
+    <input type="text" name="photo" id ="photo" value={{ photo }} "" size="100" />
+    <label for="photo">Photo link</label><br />
+
+    Join mode :
+    <input type="radio" name="join_mode" id ="open" value=1 "" />
+    <label for="open">Open</label><br />
+    <input type="radio" name="join_mode" id ="approval" value=2 "" />
+    <label for="approval">Approval</label><br />
+    <input type="radio" name="join_mode" id ="closed" value=3 "" />
+    <label for="closed">Closed</label><br />
+
+    Visibility :
+    <input type="radio" name="visibility" id ="public" value=1 "" />
+    <label for="public">Public</label><br />
+    <input type="radio" name="visibility" id ="members" value=2 "" />
+    <label for="members">Public</label><br />
+    
+    {% for city in cities %}
+    <input type="radio" name="city_name" id="city{{ forloop.counter }}" value="{{ city.city_name }}"/>
+    <label for="city{{ forloop.counter }}">{{ city.city_name }}</label><br />
+{% endfor %}
+<input type="submit" value="Create" />
+</form>

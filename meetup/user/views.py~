@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
+from django.db.models import Max
 from .models import *
 from django.utils import timezone
 import datetime
@@ -16,7 +17,7 @@ from random import randint
 
 utc=pytz.UTC
 
-max_member_id = 240852083
+max_member_id = 240852082
 
 def esc(word):
     """
@@ -74,7 +75,6 @@ def UserCreate(request):
 
 
 def UserCreation(request):
-    global max_member_id
     cities = City.objects.all()
     now = datetime.datetime.now().replace(tzinfo=utc)
     
@@ -89,8 +89,7 @@ def UserCreation(request):
     except KeyError:
         return render(request, 'user/user_create.html', {'user_id' : user_id, 'cities' : cities, 'error_message' : "You didn't select a choice"})
 
-    user_id = max_member_id
-    max_member_id += 1
+    user_id = Member.objects.all().aggregate(Max('member_id'))['member_id__max'] + 1
     groups = Groups.objects.all()
     rand_group_id = groups[randint(0,len(groups)-1)].group_id
     Member.objects.create(member_id=user_id, city_name=city_name, joined=now, member_name=name, member_status="active", visited=now, group_id=rand_group_id)
@@ -237,12 +236,13 @@ def GroupDetail(request, user_id, group_id):
     
     if memgrs.filter(member_id=user_id).exists():
         is_member = 1
+    visible = group.visibility == "public" or is_member == 1
     member_count = memgrs.distinct('member_id').count()
     topic_query = GroupTopic.objects.filter(group_id = group_id)
     topic_list = [q.topic_id for q in topic_query]
     topics = Topic.objects.filter(topic_id__in=topic_list)
     
-    return render(request, 'user/group_detail.html', {'user_id' : user_id, 'group': group, 'topics' : topics, 'organizer' : organizer,'have_org' : have_org, 'member_count' : member_count, 'now' : now, 'prev' : prev, 'is_member' : is_member, 'average' : average, 'count' : count, 'have_photo' : have_photo, 'closed' : closed})
+    return render(request, 'user/group_detail.html', {'user_id' : user_id, 'group': group, 'topics' : topics, 'organizer' : organizer,'have_org' : have_org, 'member_count' : member_count, 'now' : now, 'prev' : prev, 'is_member' : is_member, 'average' : average, 'count' : count, 'have_photo' : have_photo, 'closed' : closed, 'visible' : visible})
 
 
 def GroupJoin(request, user_id, group_id, is_member):

@@ -1,0 +1,12 @@
+<h2> Here you can create a group </h2>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'group_adding' user_id group_id %}" method="post">
+  {% csrf_token %}
+  {% for topic in topics %}
+  <input type="checkbox" name="topic" id="topic{{ forloop.counter }}" value="{{ topic.topic_id }}" "" />
+  <label for="topic{{ forloop.counter }}">{{ topic.topic_name }}</label><br/>
+  {% endfor %}
+<br/><input type="submit" value="Select" />
+</form>
