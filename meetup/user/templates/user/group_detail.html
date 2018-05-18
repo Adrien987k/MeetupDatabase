@@ -35,6 +35,10 @@
   <li><a href="{% url 'event_index' user_id 'group' group.group_id prev %}"><b>Past events</b></a></li>
 </ul>
 
+{% if user_id == group.organizer_id %}
+<h2 align="left"><input type="button" value="Create Event" onclick=window.location.href="{% url 'event_create' user_id group.group_id %}"></input></h2>
+{% endif %}
+
 {% if is_member == 1 %}
 <h2>You are member of that group</h2>
 <form action="{% url 'group_join' user_id group.group_id is_member %}" method="post">

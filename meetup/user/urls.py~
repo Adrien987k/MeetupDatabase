@@ -7,8 +7,8 @@ urlpatterns = [
     path('user_login/', views.UserLogin, name='user_login'),
     path('user_logged/', views.UserLogged, name='user_logged'),
     path('<int:user_id>/', views.UserIndex, name='user_index'),
-    path('user_create/', views.UserCreate, name='user_create'),
-    path('user_creation/', views.UserCreation, name='user_creation'),
+    path('create/', views.UserCreate, name='user_create'),
+    path('creation/', views.UserCreation, name='user_creation'),
     
     path('<int:user_id>/category/', views.CategoryIndex, name='category_index'),
     path('<int:user_id>/category/<int:category_id>/',
@@ -27,6 +27,12 @@ urlpatterns = [
          views.GroupIndex, name='group_index'),
     path('<int:user_id>/group/<int:group_id>/', views.GroupDetail, name='group_detail'),
     path('<int:user_id>/group/<int:group_id>/join/<int:is_member>', views.GroupJoin, name='group_join'),
+    path('<int:user_id>/member/<int:member_id>/create', views.GroupCreate, name='group_create'),
+    path('<int:user_id>/member/<int:member_id>/creation', views.GroupCreation, name='group_creation'),
+    path('<int:user_id>/group/<int:group_id>/modif', views.GroupModif, name='group_modif'),
+    path('<int:user_id>/group/<int:group_id>/modification', views.GroupModification, name='group_modification'),
+    path('<int:user_id>/group/<int:group_id>/select', views.GroupSelect, name='group_select'),
+    path('<int:user_id>/group/<int:group_id>/selection', views.GroupSelection, name='group_selection'),
     
     path('<int:user_id>/<str:filt>/<int:filt_pk>/<int:page>/venue/',
          views.VenueIndex, name='venue_index'),
@@ -44,6 +50,8 @@ urlpatterns = [
     path('<int:user_id>/member/<int:member_id>/deletion', views.MemberDeletion, name='member_deletion'),
     path('<int:user_id>/member/<int:member_id>/modif', views.MemberModif, name='member_modif'),
     path('<int:user_id>/member/<int:member_id>/modification', views.MemberModification, name='member_modification'),
+    path('<int:user_id>/member/<int:member_id>/select', views.MemberSelect, name='member_select'),
+    path('<int:user_id>/member/<int:member_id>/selection', views.MemberSelection, name='member_selection'),
     
     path('<int:user_id>/<str:filt>/<int:filt_pk>/<str:date>/event/',views.EventIndex,name='event_index'),
     path('<int:user_id>/<str:filt>/<str:filt_pk>/<str:date>/event/',views.EventIndex,name='event_index'),

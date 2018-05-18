@@ -1,17 +1,27 @@
-{% if visible %}
+{% if visible or user_id == group.organizer_id %}
 <h1>{{ group.group_name }}</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+{% if user_id == group.organizer_id %}
+<h2 align="right"><input type="button" value="Modify group" onclick=window.location.href="{% url 'group_modif' user_id group.group_id %}"></input></h2>
+{% endif %}
 
 <ul>
   <li><b>Description : </b>{{ group.description }}</li>
   {% if have_photo %}
   <li><a href="{{ group.photo_photo_link }}"><b>Photo</b></a></li>
   {% endif %}
+  <li><b>Main category : </b>{{ category_name }}
   <li><b>Related topics : </b>
     <ul>{% for topic in topics %}
     <li><a href="{% url 'topic_detail' user_id topic.topic_id %}">{{ topic.topic_name }}</a></li>
     {% endfor %}</ul></li>
+
+{% if user_id == group.organizer_id %}
+<h2 align="center"><input type="button" value="Change related topics" onclick=window.location.href="{% url 'group_select' user_id group.group_id %}"></input></h2>
+{% endif %}
+  
   <li><b>Join mode : </b>{{ group.join_mode }}</a></li>
   {% if have_org %}
     <li><b>Organizer : </b><a href="{% url 'member_detail' user_id group.organizer_id %}">{{ organizer.member_name }}</a></li>
@@ -19,7 +29,8 @@
     <li><b>No organizer</b></li>
     {% endif %}
     <li><b>Average event rating : </b>{{ average }} ({{ count }} total votes)</li>
-  <li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' user_id 'group' group.group_id 1 %}">Members</a></li>
+<li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' user_id 'group' group.group_id 1 %}">Members</a></li>
+<li><b>Harbour city : </b>{{ group.city_name }}</a></li>
   <li><a href="{% url 'event_index' user_id 'group' group.group_id now %}"><b>Coming events</b></a></li>
   <li><a href="{% url 'event_index' user_id 'group' group.group_id prev %}"><b>Past events</b></a></li>
 </ul>

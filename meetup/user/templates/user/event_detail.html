@@ -1,12 +1,16 @@
+{% if visible or user_id == org_id %}
 <h1>{{ event.event_name }}</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-{% if event.repinned %}<font color="red" size=5>Warning ! Event repinned.</font>{% endif %}
+{% if event.repinned  %}<font color="red" size=5>Warning ! Event repinned.</font>{% endif %}
+
+{% if user_id == org_id %}
+<h2 align="right"><input type="button" value="Modify event" onclick=window.location.href="{% url 'event_modif' user_id event.event_id %}"></input></h2>
+{% endif %}
 
 <ul>
   <li><b>Description : </b>{{ event.description }}</li>
   <li><b>Why ? : </b>{{ event.why }}</li>
-  <li><b>Status : </b>{{ event.status }}</li>
   <li><b>Organizing group : </b><a href="{% url 'group_detail' user_id event.group_id %}">{{ org_group.group_name }}</a></li>
   <li><b>Duration : </b>{{ duration }} hours</li>
   <li><b>Date and time : </b>{{ event.event_time }}</li>
@@ -52,3 +56,6 @@
 {% endif %}
 
 <h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>
+{% else %}
+You are not allowed to see this event
+{% endif %}
