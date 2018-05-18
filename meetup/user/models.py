@@ -57,9 +57,24 @@ class Groups(models.Model):
                 count = 0
             average += event.rating_average * count
             sum += count
-        if sum != 0:
-            average = average/sum
+            
+        average = average/max(sum,1)
         return(average, sum)
+
+    def avg_price(self):
+        events = Events.objects.filter(group_id=self.group_id)
+        average = 0
+        sum = 0
+        free = 0
+        for event in events:
+            if event.fee_required:
+               sum += 1
+               average += event.fee_amount
+            else:
+                free += 1
+        
+        average = average/max(sum,1)
+        return(average, sum, free)
 
 
 class Member(models.Model):

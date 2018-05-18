@@ -17,3 +17,6 @@ USING btree (rating_average) TABLESPACE pg_default;
 
 CREATE INDEX user_event_rating_average ON public.user_events
 USING btree (rating_average) TABLESPACE pg_default;
+
+CREATE INDEX user_topicfollowed_member_id ON public.user_topicfollowed
+USING btree (member_id) TABLESPACE pg_default;

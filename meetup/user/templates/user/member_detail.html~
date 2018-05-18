@@ -17,10 +17,18 @@
     <ul>{% for topic in topics %}
     <li><a href="{% url 'topic_detail' user_id topic.topic_id %}">{{ topic.topic_name }}</a></li>
     {% endfor %}</ul></li>
+
+{% if user_id == member.member_id %}
+<h2 align="center"><input type="button" value="Change followed topics" onclick=window.location.href="{% url 'member_select' user_id user_id %}"></input></h2>
+{% endif %}
+  
   <li><b>Joined groups : </b>
     <ul>{% for group in groups %}
     <li><a href="{% url 'group_detail' user_id group.group_id %}">{{ group.group_name }}</a></li>
     {% endfor %}</ul></li>
 </ul>
+{% if member.member_id == user_id %}
+<h2 align="center"><input type="button" value="Create a group" onclick=window.location.href="{% url 'group_create' user_id user_id %}"></input></h2>
+{% endif %}
 
 <h2 align="right"><input type="button" value="Menu" onclick=window.location.href="{% url 'user_index' user_id %}"></input></h2>

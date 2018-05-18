@@ -24,7 +24,7 @@
   
   <li><b>Joined groups : </b>
     <ul>{% for group in groups %}
-    <li><a href="{% url 'group_detail' user_id group.group_id %}">{{ group.group_name }}</a></li>
+    <li><a href="{% url 'group_detail' user_id group.group_id %}">{{ group.group_name }}</a>{% if member.member_id == group.organizer_id %} &#128081;{% endif %}</li>
     {% endfor %}</ul></li>
 </ul>
 {% if member.member_id == user_id %}

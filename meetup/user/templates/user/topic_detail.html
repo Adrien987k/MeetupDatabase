@@ -12,7 +12,7 @@
   <li><b>Gathering : </b>{{ group_count }} <a href="{% url 'group_index' user_id 'topic' topic.topic_id %}"> Groups</a></li>
   <li><b>Followers : </b>{{ member_count }} <a href="{% url 'member_index' user_id 'topic' topic.topic_id 1 %}">Members</a></li>
   <li><a href="{% url 'event_index' user_id 'topic' topic.topic_id now %}"><b>Coming events</b></a></li>
-  <li><a href="{% url 'event_index' user_id 'group' topic.topic_id prev %}"><b>Past events</b></a></li>
+  <li><a href="{% url 'event_index' user_id 'topic' topic.topic_id prev %}"><b>Past events</b></a></li>
 </ul>
 
 {% if follows == 1 %}

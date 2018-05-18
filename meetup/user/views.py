@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.views import generic
 
 from django.db.models import Max
+from django.db.models.functions import Coalesce
 from .models import *
 from django.utils import timezone
 import datetime
@@ -27,6 +28,14 @@ def esc(word):
         return(word[1:len(word)])
     else:
         return(word)
+
+def cn(word):
+    """
+    Put to Null if the word 'means' Null
+    """
+    if word == "" or word == "None" or word == "Null":
+        return(None)
+    return(word)
     
 
 #*** User ***********************
@@ -39,6 +48,7 @@ def Auth(request):
 def UserLogin(request):
     return render(request, 'user/user_login.html', {})
 
+#*** Login ***
 
 def UserLogged(request):
     user_id = int(esc(request.GET['id']))
@@ -68,6 +78,8 @@ def UserIndex(request, user_id):
     now = now.strftime("%Y-%m-%d %H:%M:%S")
     return render(request, 'user/user_index.html', {'now' : now, 'user' : user})
 
+#*** Create ***
+
 def UserCreate(request):
         
     cities = City.objects.all()
@@ -83,7 +95,7 @@ def UserCreation(request):
         if len(name) > 50:
             return render(request, 'user/user_create.html', {'user_id' : user_id, 'cities' : cities, 'error_message' : "Too long name"})
         
-        bio = request.POST['bio']
+        bio = cn(request.POST['bio'])
         city_name = request.POST['city_name']
         
     except KeyError:
@@ -165,6 +177,8 @@ def TopicDetail(request, user_id, topic_id):
     
     return render(request, 'user/topic_detail.html', {'user_id' : user_id, 'topic': topic, 'parent_topic' : parent_topic, 'group_count' : group_count, 'have_parent' : have_parent, 'member_count' : member_count, 'now' : now, 'prev' : prev, 'follows' : follows})
 
+#*** Follow ***
+
 def TopicFollow(request, user_id, topic_id, follows):
     topic = get_object_or_404(Topic, pk=topic_id)
 
@@ -216,11 +230,12 @@ def GroupIndex(request, user_id, filt, filt_pk):
 def GroupDetail(request, user_id, group_id):
     group = get_object_or_404(Groups, pk=group_id)
     organizers = Member.objects.filter(member_id=group.organizer_id)
-    organizer = Member.objects.get(pk=1) # default
+    organizer = 0 #default
     category_name=Category.objects.get(pk=group.category_id).category_name
     
     closed = group.join_mode == "closed"
     average,count = group.rating()
+    avg_price,nf_count,free = group.avg_price()
     have_photo = Groups.objects.filter(pk=group_id,photo_photo_link__isnull=False).exists()
     
     if len(organizers) == 0:
@@ -243,8 +258,9 @@ def GroupDetail(request, user_id, group_id):
     topic_list = [q.topic_id for q in topic_query]
     topics = Topic.objects.filter(topic_id__in=topic_list)
     
-    return render(request, 'user/group_detail.html', {'user_id' : user_id, 'group': group, 'topics' : topics, 'organizer' : organizer,'have_org' : have_org, 'member_count' : member_count, 'now' : now, 'prev' : prev, 'is_member' : is_member, 'average' : average, 'count' : count, 'have_photo' : have_photo, 'closed' : closed, 'visible' : visible, 'category_name' : category_name})
+    return render(request, 'user/group_detail.html', {'user_id' : user_id, 'group': group, 'topics' : topics, 'organizer' : organizer,'have_org' : have_org, 'member_count' : member_count, 'now' : now, 'prev' : prev, 'is_member' : is_member, 'average' : average, 'count' : count, 'have_photo' : have_photo, 'closed' : closed, 'visible' : visible, 'category_name' : category_name, 'avg_price' : avg_price, 'nf_count' : nf_count, 'free' : free})
 
+#*** Join ***
 
 def GroupJoin(request, user_id, group_id, is_member):
     group = get_object_or_404(Groups, pk=group_id)
@@ -283,6 +299,7 @@ def GroupJoin(request, user_id, group_id, is_member):
                 
     return render(request, 'user/group_joinresults.html', {'user_id' : user_id, 'group' : group, 'is_member' : is_member, 'error' : error, 'wait' : wait, 'closed' : closed})
 
+#*** Create
 
 def GroupCreate(request, user_id, member_id):
     if user_id != member_id:
@@ -305,14 +322,14 @@ def GroupCreation(request, user_id, member_id):
         if len(name) > 100:
             return render(request, 'user/group_create.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'error_message' : "Too long name"})
         
-        description = request.POST['description']
-        photo = request.POST['photo']
+        description = cn(request.POST['description'])
+        photo = cn(request.POST['photo'])
         visibility = request.POST['visibility']
         join_mode = request.POST['join_mode']
         city_name = request.POST['city_name']
         city = City.objects.get(pk=city_name)
         category_id = int(request.POST['category_id'])
-        who = request.POST['who']
+        who = cn(request.POST['who'])
 
         if len(who) > 50:
             return render(request, 'user/group_create.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'error_message' : "Too long members name"})
@@ -325,6 +342,8 @@ def GroupCreation(request, user_id, member_id):
     Groups.objects.create(group_id=group_id, created=now, description=description, photo_photo_link=photo, join_mode=join_mode, group_name=name, organizer_id=user_id, visibility=visibility, who=who, category_id=category_id, city_name=city)
     
     return render(request, 'user/group_created.html', {'user_id' : user_id, 'group_id' : group_id})
+
+#*** Modify ***
 
 def GroupModif(request, user_id, group_id):
     group = get_object_or_404(Groups, pk=group_id)
@@ -346,27 +365,27 @@ def GroupModification(request, user_id, group_id):
     try:
         name = request.POST['name']
         if len(name) > 100:
-            return render(request, 'user/group_create.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'error_message' : "Too long name"})
+            return render(request, 'user/group_modif.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'group' : group, 'error_message' : "Too long name"})
         
-        description = request.POST['description']
-        photo = request.POST['photo']
+        description = cn(request.POST['description'])
+        photo = cn(request.POST['photo'])
         visibility = request.POST['visibility']
         join_mode = request.POST['join_mode']
         city_name = request.POST['city_name']
         city = City.objects.get(pk=city_name)
         category_id = int(request.POST['category_id'])
-        who = request.POST['who']
+        who = cn(request.POST['who'])
 
         if len(who) > 50:
-            return render(request, 'user/group_create.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'error_message' : "Too long members name"})
+            return render(request, 'user/group_modif.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'group' : group, 'error_message' : "Too long members name"})
         
     except KeyError:
-        return render(request, 'user/group_create.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'error_message' : "You didn't select a choice"})
+        return render(request, 'user/group_modif.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'group' : group, 'error_message' : "You didn't select a choice"})
 
     group.group_name = name
     group.description = description
     group.photo_photo_link = photo
-    group.jon_mode = join_mode
+    group.join_mode = join_mode
     group.visibility = visibility
     group.who = who
     group.category_id = category_id
@@ -375,6 +394,7 @@ def GroupModification(request, user_id, group_id):
     
     return render(request, 'user/group_modified.html', {'user_id' : user_id, 'group_id' : group_id})
 
+#*** Select topics ***
 
 def GroupSelect(request, user_id, group_id):
     group = get_object_or_404(Groups, pk=group_id)
@@ -413,13 +433,16 @@ def GroupSelection(request, user_id, group_id):
 
 
 def VenueIndex(request, user_id, filt, filt_pk, page):
+    rating = 0
     if filt == "city":
-        venue_list = Venue.objects.filter(city_name=filt_pk)
+        venue_list = Venue.objects.filter(city_name=filt_pk).distinct('venue_name').order_by('venue_name')
         filt_name = filt_pk
+        dual = "city_rating"
         
     else:
-        venue_list = Venue.objects.all()
+        venue_list = Venue.objects.all().distinct('venue_name').order_by('venue_name')
         filt_name = ""
+        dual = "rating"
 
     venue_list = venue_list.distinct('venue_name').order_by('venue_name')
     page_max = len(venue_list) // 1000 + 1
@@ -446,6 +469,8 @@ def VenueDetail(request, user_id, venue_id):
     votes = range(0,6)
     
     return render(request, 'user/venue_detail.html', {'user_id' : user_id, 'venue': venue, 'rating_count': rating_count, 'event_count' : event_count, 'now' : now, 'votes' : votes})
+
+#*** Vote ***
 
 def VenueVote(request, user_id, venue_id):
     venue = get_object_or_404(Venue, pk=venue_id)
@@ -521,6 +546,7 @@ def MemberDetail(request, user_id, member_id):
     
     return render(request, 'user/member_detail.html', {'user_id' : user_id, 'member': member, 'groups' : groups, 'topics' : topics})
 
+#*** Delete ***
 
 def MemberDelete(request, user_id, member_id):
     if member_id != user_id:
@@ -544,9 +570,11 @@ def MemberDeletion(request, user_id, member_id):
         raise Http404("This member does not exist")
     else:
         memgrs.delete()
+        TopicFollowed.objects.filter(member_id=user_id).delete()
     
     return render(request, 'user/member_deleted.html', {})
 
+#*** Modify ***
 
 def MemberModif(request, user_id, member_id):
     if member_id != user_id:
@@ -578,7 +606,7 @@ def MemberModification(request, user_id, member_id):
             if len(name) > 50:
                 return render(request, 'user/member_modif.html', {'user_id' : user_id, 'member': member, 'cities' : cities, 'error_message' : "Too long name"})
         
-            bio = request.POST['bio']
+            bio = cn(request.POST['bio'])
             city_name = request.POST ['city_name']
         
         except KeyError:
@@ -592,6 +620,7 @@ def MemberModification(request, user_id, member_id):
     
     return render(request, 'user/member_modified.html', {'user_id' : user_id})
 
+#*** Select topic ***
 
 def MemberSelect(request, user_id, member_id):
     memgrs = Member.objects.filter(member_id=member_id)
@@ -704,6 +733,7 @@ def EventDetail(request, user_id, event_id):
    
     return render(request, 'user/event_detail.html', {'user_id' : user_id, 'event': event, 'duration' : duration, 'org_group' : org_group, 'have_org' : have_org, 'venue' : venue, 'have_venue' : have_venue, 'past' : past, 'votes' : votes, 'rating_count' : rating_count, 'org_id' : org_id, 'visible' : visible})
 
+#*** Vote ***
 
 def EventVote(request, user_id, event_id):
     event = get_object_or_404(Events, pk=event_id)
@@ -744,6 +774,7 @@ def EventVote(request, user_id, event_id):
         event.save()
         return render(request, 'user/event_results.html', {'user_id' : user_id, 'event' : event})
 
+#*** Join ***
     
 def EventJoin(request, user_id, event_id):
     event = get_object_or_404(Events, pk=event_id)
@@ -792,6 +823,7 @@ def EventJoin(request, user_id, event_id):
         
         return render(request, 'user/event_joinresults.html', {'user_id' : user_id, 'event' : event, 'wait' : wait, 'yes' : yes})
 
+#*** Create ***
 
 def EventCreate(request, user_id, group_id):
     group = get_object_or_404(Groups,pk=group_id)
@@ -816,10 +848,10 @@ def EventCreation(request, user_id, group_id):
     try:
         name = request.POST['name']
         if len(name) > 100:
-            return render(request, 'user/group_create.html', {'user_id' : user_id, 'event' : event, 'error_message' : "Too long name"})
+            return render(request, 'user/group_create.html', {'user_id' : user_id, 'group' : group, 'error_message' : "Too long name"})
         
-        description = request.POST['description']
-        why = request.POST['why']
+        description = cn(request.POST['description'])
+        why = cn(request.POST['why'])
         visibility = request.POST['visibility']
         time = datetime.datetime.strptime(request.POST['time'], '%Y-%m-%d %H:%M:%S').replace(tzinfo=utc)
         duration = int(request.POST['duration'])*60
@@ -827,18 +859,18 @@ def EventCreation(request, user_id, group_id):
         required = request.POST['required'] == "1"
         amount = int(request.POST['amount'])
         accepts = request.POST['accepts']
-        htfu = request.POST['htfu']
+        htfu = cn(request.POST['htfu'])
         venue_name = request.POST['venue']
 
         venues = Venue.objects.filter(venue_name=venue_name)
         if len(venues) == 0:
-            return render(request, 'user/event_create.html', {'user_id' : user_id, 'event' : event, 'error_message' : "This venue doesn't exist"})
+            return render(request, 'user/event_create.html', {'user_id' : user_id, 'group' : group, 'error_message' : "This venue doesn't exist"})
 
     except ValueError:
-        return render(request, 'user/event_create.html', {'user_id' : user_id, 'event' : event, 'error_message' : "Not an integer or not a right time"})
+        return render(request, 'user/event_create.html', {'user_id' : user_id, 'group' : group, 'error_message' : "Not an integer or not a right time"})
         
     except KeyError:
-        return render(request, 'user/event_create.html', {'user_id' : user_id,'event' : event, 'error_message' : "You didn't select a choice"})
+        return render(request, 'user/event_create.html', {'user_id' : user_id,'group' : group, 'error_message' : "You didn't select a choice"})
 
     event_id = Events.objects.all().aggregate(Max('event_id'))['event_id__max'] + "0"
     
@@ -846,6 +878,7 @@ def EventCreation(request, user_id, group_id):
     
     return render(request, 'user/event_created.html', {'user_id' : user_id, 'event_id' : event_id})
 
+#*** Modify ***
         
 def EventModif(request, user_id, event_id):
     event = get_object_or_404(Events, pk=event_id)
@@ -883,8 +916,8 @@ def EventModification(request, user_id, event_id):
         if len(name) > 100:
             return render(request, 'user/event_modif.html', {'user_id' : user_id, 'event' : event, 'error_message' : "Too long name", 'time' : time, 'duration' : duration, 'required' : required})
         
-        description = request.POST['description']
-        why = request.POST['why']
+        description = cn(request.POST['description'])
+        why = cn(request.POST['why'])
         visibility = request.POST['visibility']
         time = datetime.datetime.strptime(request.POST['time'], '%Y-%m-%d %H:%M:%S').replace(tzinfo=utc)
         duration = int(request.POST['duration'])*60
@@ -892,6 +925,12 @@ def EventModification(request, user_id, event_id):
         required = request.POST['required'] == "1"
         amount = int(request.POST['amount'])
         accepts = request.POST['accepts']
+        htfu = cn(request.POST['htfu'])
+        venue_name = request.POST['venue']
+        
+        venues = Venue.objects.filter(venue_name=venue_name)
+        if len(venues) == 0:
+            return render(request, 'user/event_create.html', {'user_id' : user_id, 'event' : event, 'error_message' : "This venue doesn't exist"})
 
     except ValueError:
         return render(request, 'user/event_modif.html', {'user_id' : user_id, 'event' : event, 'error_message' : "Not an integer or not a right time", 'time' : time, 'duration' : duration, 'required' : required})
@@ -908,6 +947,8 @@ def EventModification(request, user_id, event_id):
     event.fee_required = required
     event.fee_amount = amount
     event.fee_accepts = accepts
+    event.how_to_find_us = htfu
+    event.venue_id = venues[0].venue_id
 
     if time != event.event_time:
         event.updated = now

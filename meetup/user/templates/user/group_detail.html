@@ -31,6 +31,7 @@
     <li><b>Average event rating : </b>{{ average }} ({{ count }} total votes)</li>
 <li><b>Population : </b>{{ member_count }} <a href="{% url 'member_index' user_id 'group' group.group_id 1 %}">Members</a></li>
 <li><b>Harbour city : </b>{{ group.city_name }}</a></li>
+<li><b>Average price per charged event : </b>{{ avg_price }} (on {{ nf_count }} total charged events, against {{ free }} free events)</li>
   <li><a href="{% url 'event_index' user_id 'group' group.group_id now %}"><b>Coming events</b></a></li>
   <li><a href="{% url 'event_index' user_id 'group' group.group_id prev %}"><b>Past events</b></a></li>
 </ul>
