@@ -84,7 +84,7 @@ def UserCreation(request):
             return render(request, 'user/user_create.html', {'user_id' : user_id, 'cities' : cities, 'error_message' : "Too long name"})
         
         bio = request.POST['bio']
-        city_name = request.POST ['city_name']
+        city_name = request.POST['city_name']
         
     except KeyError:
         return render(request, 'user/user_create.html', {'user_id' : user_id, 'cities' : cities, 'error_message' : "You didn't select a choice"})
@@ -217,6 +217,7 @@ def GroupDetail(request, user_id, group_id):
     group = get_object_or_404(Groups, pk=group_id)
     organizers = Member.objects.filter(member_id=group.organizer_id)
     organizer = Member.objects.get(pk=1) # default
+    category_name=Category.objects.get(pk=group.category_id).category_name
     
     closed = group.join_mode == "closed"
     average,count = group.rating()
@@ -242,7 +243,7 @@ def GroupDetail(request, user_id, group_id):
     topic_list = [q.topic_id for q in topic_query]
     topics = Topic.objects.filter(topic_id__in=topic_list)
     
-    return render(request, 'user/group_detail.html', {'user_id' : user_id, 'group': group, 'topics' : topics, 'organizer' : organizer,'have_org' : have_org, 'member_count' : member_count, 'now' : now, 'prev' : prev, 'is_member' : is_member, 'average' : average, 'count' : count, 'have_photo' : have_photo, 'closed' : closed, 'visible' : visible})
+    return render(request, 'user/group_detail.html', {'user_id' : user_id, 'group': group, 'topics' : topics, 'organizer' : organizer,'have_org' : have_org, 'member_count' : member_count, 'now' : now, 'prev' : prev, 'is_member' : is_member, 'average' : average, 'count' : count, 'have_photo' : have_photo, 'closed' : closed, 'visible' : visible, 'category_name' : category_name})
 
 
 def GroupJoin(request, user_id, group_id, is_member):
@@ -281,6 +282,131 @@ def GroupJoin(request, user_id, group_id, is_member):
                 Member.objects.create(member_id=user_id, city_name=m.city_name, joined=m.joined, member_name=m.member_name, member_status=m.member_status, visited=now, group_id=group_id)
                 
     return render(request, 'user/group_joinresults.html', {'user_id' : user_id, 'group' : group, 'is_member' : is_member, 'error' : error, 'wait' : wait, 'closed' : closed})
+
+
+def GroupCreate(request, user_id, member_id):
+    if user_id != member_id:
+        raise Http404("Error. Wrong way to create a group")
+        
+    cities = City.objects.all()
+    categories = Category.objects.all()
+    return render(request, 'user/group_create.html', {'cities' : cities, 'user_id' : user_id, 'categories' : categories})
+
+
+def GroupCreation(request, user_id, member_id):
+    if user_id != member_id:
+        raise Http404("Error. Wrong way to create a group")
+    cities = City.objects.all()
+    categories = Category.objects.all()
+    now = datetime.datetime.now().replace(tzinfo=utc)
+    
+    try:
+        name = request.POST['name']
+        if len(name) > 100:
+            return render(request, 'user/group_create.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'error_message' : "Too long name"})
+        
+        description = request.POST['description']
+        photo = request.POST['photo']
+        visibility = request.POST['visibility']
+        join_mode = request.POST['join_mode']
+        city_name = request.POST['city_name']
+        city = City.objects.get(pk=city_name)
+        category_id = int(request.POST['category_id'])
+        who = request.POST['who']
+
+        if len(who) > 50:
+            return render(request, 'user/group_create.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'error_message' : "Too long members name"})
+        
+    except KeyError:
+        return render(request, 'user/group_create.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'error_message' : "You didn't select a choice"})
+
+    group_id = Groups.objects.all().aggregate(Max('group_id'))['group_id__max'] + 1
+    
+    Groups.objects.create(group_id=group_id, created=now, description=description, photo_photo_link=photo, join_mode=join_mode, group_name=name, organizer_id=user_id, visibility=visibility, who=who, category_id=category_id, city_name=city)
+    
+    return render(request, 'user/group_created.html', {'user_id' : user_id, 'group_id' : group_id})
+
+def GroupModif(request, user_id, group_id):
+    group = get_object_or_404(Groups, pk=group_id)
+    if user_id != group.organizer_id:
+        raise Http404("You are not allowed to alter this")
+        
+    cities = City.objects.all()
+    categories = Category.objects.all()
+    return render(request, 'user/group_modif.html', {'cities' : cities, 'user_id' : user_id, 'categories' : categories, 'group' : group})
+
+
+def GroupModification(request, user_id, group_id):
+    group = get_object_or_404(Groups, pk=group_id)
+    if user_id != group.organizer_id:
+        raise Http404("You are not allowed to alter this")
+    cities = City.objects.all()
+    categories = Category.objects.all()
+    
+    try:
+        name = request.POST['name']
+        if len(name) > 100:
+            return render(request, 'user/group_create.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'error_message' : "Too long name"})
+        
+        description = request.POST['description']
+        photo = request.POST['photo']
+        visibility = request.POST['visibility']
+        join_mode = request.POST['join_mode']
+        city_name = request.POST['city_name']
+        city = City.objects.get(pk=city_name)
+        category_id = int(request.POST['category_id'])
+        who = request.POST['who']
+
+        if len(who) > 50:
+            return render(request, 'user/group_create.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'error_message' : "Too long members name"})
+        
+    except KeyError:
+        return render(request, 'user/group_create.html', {'user_id' : user_id, 'cities' : cities, 'categories' : categories, 'error_message' : "You didn't select a choice"})
+
+    group.group_name = name
+    group.description = description
+    group.photo_photo_link = photo
+    group.jon_mode = join_mode
+    group.visibility = visibility
+    group.who = who
+    group.category_id = category_id
+    group.city_name = city
+    group.save()
+    
+    return render(request, 'user/group_modified.html', {'user_id' : user_id, 'group_id' : group_id})
+
+
+def GroupSelect(request, user_id, group_id):
+    group = get_object_or_404(Groups, pk=group_id)
+    if user_id != group.organizer_id:
+        raise Http404("You are not allowed to alter this")
+    followed = GroupTopic.objects.filter(group_id=group_id)
+    tpflwd = Topic.objects.filter(topic_id__in=[q.topic_id for q in followed])
+    topics = Topic.objects.all().difference(tpflwd).order_by('topic_name')
+
+    return render(request, 'user/group_select.html', {'user_id' : user_id, 'group' : group, 'topics' : topics, 'followed' : tpflwd})
+
+
+def GroupSelection(request, user_id, group_id):
+    group = get_object_or_404(Groups, pk=group_id)
+    if user_id != group.organizer_id:
+        raise Http404("You are not allowed to alter this")
+    followed = GroupTopic.objects.filter(group_id=group_id)
+    tpflwd = Topic.objects.filter(topic_id__in=[q.topic_id for q in followed])
+    topics = Topic.objects.all().difference(tpflwd).order_by('topic_name')
+    
+    try:
+        topics = request.POST.getlist('topic')
+        
+    except KeyError:
+        return render(request, 'user/group_select.html', {'user_id' : user_id, 'group' : group, 'topics' : topics, 'followed' : tpflwd})
+
+    for topic in followed.difference(followed.filter(topic_id__in=topics)):
+        GroupTopic.objects.get(topic_id=topic.topic_id,group_id=group_id).delete()
+    for topic_id in topics:
+        GroupTopic.objects.update_or_create(group_id=group_id, topic_id=topic_id)
+    
+    return render(request, 'user/group_selected.html', {'user_id' : user_id, 'group_id' : group_id})
 
 
 # *** Venue ***********************
@@ -465,6 +591,49 @@ def MemberModification(request, user_id, member_id):
             member.save()
     
     return render(request, 'user/member_modified.html', {'user_id' : user_id})
+
+
+def MemberSelect(request, user_id, member_id):
+    memgrs = Member.objects.filter(member_id=member_id)
+    if len(memgrs) == 0:
+        raise Http404("This member does not exist")
+    else:
+        member = memgrs[0]
+    if member_id != user_id:
+        raise Http404("You are not allowed to do this")
+
+    followed = TopicFollowed.objects.filter(member_id=member_id)
+    tpflwd = Topic.objects.filter(topic_id__in=[q.topic_id for q in followed])
+    topics = Topic.objects.all().difference(tpflwd).order_by('topic_name')
+
+    return render(request, 'user/member_select.html', {'user_id' : user_id, 'member' : member, 'topics' : topics, 'followed' : tpflwd})
+
+
+def MemberSelection(request, user_id, member_id):
+    memgrs = Member.objects.filter(member_id=member_id)
+    if len(memgrs) == 0:
+        raise Http404("This member does not exist")
+    else:
+        member = memgrs[0]
+    if member_id != user_id:
+        raise Http404("You are not allowed to do this")
+    
+    followed = TopicFollowed.objects.filter(member_id=member_id)
+    tpflwd = Topic.objects.filter(topic_id__in=[q.topic_id for q in followed])
+    topics = Topic.objects.all().difference(tpflwd).order_by('topic_name')
+    
+    try:
+        topics = request.POST.getlist('topic')
+        
+    except KeyError:
+        return render(request, 'user/member_select.html', {'user_id' : user_id, 'member' : member, 'topics' : topics, 'followed' : tpflwd})
+
+    for topic in followed.difference(followed.filter(topic_id__in=topics)):
+        TopicFollowed.objects.get(topic_id=topic.topic_id,member_id=member_id).delete()
+    for topic_id in topics:
+        TopicFollowed.objects.create(member_id=member_id, topic_id=topic_id)
+    
+    return render(request, 'user/member_selected.html', {'user_id' : user_id, 'member_id' : member_id})
 
 
 #*** Event ***********************

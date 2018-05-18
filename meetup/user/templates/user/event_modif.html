@@ -1,0 +1,32 @@
+<h2> Here you can modify {{ event.event_name }} </h2>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'event_modification' user_id event.event_id %}" method="post">
+{% csrf_token %}
+    
+    <b>Name : </b><input type="text" name="name" id="name" value="{{ name }}" placeholder="{{ event.event_name }}" />
+    <br/><b>Description : </b><input type="text" name="description" id ="desc" value="{{ description }}" placeholder="{{ event.description }}" size="100" />
+    <br/><b>Intention : </b><input type="text" name="why" id ="why" value="{{ why }}" placeholder="{{ event.why }}" />
+    <br/><b>Date and hour : </b><input type="text" name="time" id ="time" value="{{ time }}" placeholder="{{ time }}" size="30" />
+    <br/><b>Duration : </b><input type="text" name="duration" id ="duration" value="{{ duration }}" placeholder="{{ event.duration }}" />
+    <br/><b>Participant maximum : </b><input type="text" name="limit" id ="limit" value="{{ limit }}" placeholder="{{ event.rsvp_limit }}" />
+    <br/><b>Venue name : </b><input type="text" name="venue" id ="venue" value="{{ venue }}" placeholder="{{ venue_name }}" /> <a href="{% url 'venue_index' user_id 'userindex' 'all' 1 %}">See all venues</a>
+    <br/><b>Additionnal location information : </b><input type="text" name="htfu" id ="htfu" value="{{ htfu }}" placeholder="{{ event.how_to_find_us }}" /><br/>
+
+    <br/><b>Visibility :</b><br/>
+    <input type="radio" name="visibility" id ="public" value="public" "" />
+    <label for="public">{% if event.visibility == "public" %}<b>Public</b>{% else %}Public{% endif %}</label>
+    <input type="radio" name="visibility" id ="members" value="members" "" />
+    <label for="members">{% if event.visibility == "members" %}<b>Members</b>{% else %}Members{% endif %}</label><br />
+
+    <br/><b>Fee : </b>
+    <input type="radio" name="required" id ="required" value="1" "" />
+    <label for="required">{% if required == 1 %}<b>Required</b>{% else %}Required{% endif %}</label>
+    <input type="radio" name="required" id ="free" value="0" "" />
+    <label for="free">{% if required == 0 %}<b>Free</b>{% else %}Free{% endif %}</label>
+    <br/><b>Amount : </b><input type="text" name="amount" id ="amount" value="{{ amount }}" placeholder="{{ event.fee_amount }}" />
+    <br/><b>Payment mean : </b><input type="text" name="accepts" id ="accepts" value="{{ accepts }}" placeholder="{{ event.fee_accepts }}" />
+    
+<br/><input type="submit" value="Save" />
+</form>

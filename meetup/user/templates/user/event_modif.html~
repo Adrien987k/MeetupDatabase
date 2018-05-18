@@ -1,0 +1,30 @@
+<h2> Here you can midify your event</h2>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'event_modification' user_id event_id %}" method="post">
+{% csrf_token %}
+    
+    <b>Name : </b><input type="text" name="name" id="name" value="{{ name }}" placeholder="{{ event.event_name }}" />
+    <br/><b>Description : </b><input type="text" name="description" id ="desc" value="{{ description }}" placeholder="{{ event.description }}" size="100" />
+    <br/><b>Intention : </b><input type="text" name="why" id ="why" value="{{ why }}" placeholder="{{ event.why }}" />
+    <br/><b>Date and hour : </b><input type="text" name="time" id ="time" value="{{ time }}" placeholder="{{ event.event_time }}" />
+    <br/><b>Duration : </b><input type="text" name="duration" id ="duration" value="{{ duration }}" placeholder="{{ event_duration }}" />
+    <br/><b>Participant maximum : </b><input type="text" name="limit" id ="limit" value="{{ limit }}" "" />
+
+    <br/><b>Visibility :</b><br/>
+    <input type="radio" name="visibility" id ="public" value="public" "" />
+    <label for="public">Public</label><br />
+    <input type="radio" name="visibility" id ="members" value="members" "" />
+    <label for="members">Members</label><br />
+
+    <br/><b>Fee : </b>
+    <input type="radio" name="required" id ="required" value=1 "" />
+    <label for="required">Public</label>
+    <input type="radio" name="required" id ="free" value=2 "" />
+    <label for="free">Members</label><br />
+    <br/><b>Amount : </b><input type="text" name="amount" id ="amount" value="{{ amount }}" placeholder="0" size="100" />
+    <br/><b>Payment mean : </b><input type="text" name="accepts" id ="accepts" value="{{ accepts }}" placeholder="others" />
+    
+<br/><input type="submit" value="Create" />
+</form>

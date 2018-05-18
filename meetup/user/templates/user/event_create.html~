@@ -1,0 +1,30 @@
+<h2> Here you can create a event for {{ group.group_name }} </h2>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'event_creation' user_id group_id %}" method="post">
+{% csrf_token %}
+    
+    <b>Name : </b><input type="text" name="name" id="name" value="{{ name }}" "" />
+    <br/><b>Description : </b><input type="text" name="description" id ="desc" value="{{ description }}" "" size="100" />
+    <br/><b>Intention : </b><input type="text" name="why" id ="why" value="{{ why }}" "" />
+    <br/><b>Date and hour : </b><input type="text" name="time" id ="time" value="{{ time }}" placeholder="{{ (Format : %Y-%m-%d %H:%M:%S) }}" />
+    <br/><b>Duration : </b><input type="text" name="duration" id ="duration" value="{{ duration }}" placeholder="{{ (In minutes) }}" />
+    <br/><b>Participant maximum : </b><input type="text" name="limit" id ="limit" value="{{ limit }}" "" />
+
+    <br/><b>Visibility :</b><br/>
+    <input type="radio" name="visibility" id ="public" value="public" "" />
+    <label for="public">Public</label><br />
+    <input type="radio" name="visibility" id ="members" value="members" "" />
+    <label for="members">Members</label><br />
+
+    <br/><b>Fee : </b>
+    <input type="radio" name="required" id ="required" value=1 "" />
+    <label for="required">Public</label>
+    <input type="radio" name="required" id ="free" value=2 "" />
+    <label for="free">Members</label><br />
+    <br/><b>Amount : </b><input type="text" name="amount" id ="amount" value="{{ amount }}" "" size="100" />
+    <br/><b>Payment mean : </b><input type="text" name="accepts" id ="accepts" value="{{ accepts }}" "" />
+    
+<br/><input type="submit" value="Create" />
+</form>

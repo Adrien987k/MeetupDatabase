@@ -5,10 +5,10 @@
 <form action="{% url 'group_modification' user_id group.group_id %}" method="post">
 {% csrf_token %}
     
-    <b>Name : </b><input type="text" name="name" id="name" value="{{ name }}" "{{group.group_name }}" />
-    <br/><b>Description : </b><input type="text" name="description" id ="desc" value="{{ description }}" "{{ group.description }}" size="100" />
-    <br/><b>Name of the members of that group : </b><input type="text" name="who" id ="who" value="{{ who }}" "{{ group.who }}" />
-    <br/><b>Photo link : </b><input type="text" name="photo" id ="photo" value="{{ photo }}" "{{ group.photo_photo_link" size="100" />
+    <b>Name : </b><input type="text" name="name" id="name" value="{{ name }}" placeholder="{{group.group_name }}"  />
+    <br/><b>Description : </b><input type="text" name="description" id ="desc" value="{{ description }}" placeholder="{{ group.description }}" size="100" />
+    <br/><b>Name of the members of that group : </b><input type="text" name="who" id ="who" value="{{ who }}" placeholder="{{ group.who }}" />
+    <br/><b>Photo link : </b><input type="text" name="photo" id ="photo" value="{{ photo }}" placeholder="{{ group.photo_photo_link }}" size="100" />
 
     <br/><b>Visibility :</b><br/>
     <input type="radio" name="visibility" id ="public" value="public" "" />
@@ -27,13 +27,13 @@
     <br/><b>Harbour city : </b><br/>
     {% for city in cities %}
     <input type="radio" name="city_name" id="city{{ forloop.counter }}" value="{{ city.city_name }}"/>
-    <label for="city{{ forloop.counter }}">{% if city.city_name == group.city_name %}<b>{{ city.city_name }}</b>{% else %}{{ city.city_name }}{% endif %}</label><br />
+    <label for="city{{ forloop.counter }}">{% if city.city_name == group.city_name.city_name %}<b>{{ city.city_name }}</b>{% else %}{{ city.city_name }}{% endif %}</label><br />
 {% endfor %}
 
     <br/><b>Main category :</b><br/>
     {% for category in categories %}
     <input type="radio" name="category_id" id="category{{ forloop.counter }}" value="{{ category.category_id }}" />
-    <label for="category{{ forloop.counter }}">{% if category.category_id == group.category_id %}<b>{{ category.ctaegory_name }}</b>{% else %}{{ category.category_name }}{% endif %}</label><br />
+    <label for="category{{ forloop.counter }}">{% if category.category_id == group.category_id %}<b>{{ category.category_name }}</b>{% else %}{{ category.category_name }}{% endif %}</label><br />
 {% endfor %}
-<br/><input type="submit" value="Create" />
+<br/><input type="submit" value="Save" />
 </form>

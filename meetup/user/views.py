@@ -681,12 +681,17 @@ def EventDetail(request, user_id, event_id):
     if rating_count == -1:
         rating_count = 0
     duration = event.duration / 3600
-    
+
+    visible = True
     try:
         org_group = Groups.objects.get(pk=event.group_id)
         have_org = True
+        org_id = org_group.organizer_id
+        if event.visibility == "private":
+            visible = Member.objects.filter(member_id=user_id,group_id=org_group.group_id).exists()
     except Groups.DoesNotExist:
         have_org = False
+        org_id=0
     
     try:
         venue = Venue.objects.get(pk=event.venue_id)
@@ -697,7 +702,7 @@ def EventDetail(request, user_id, event_id):
     past = datetime.datetime.now().replace(tzinfo=utc) > event.event_time
     votes = range(0,6)
    
-    return render(request, 'user/event_detail.html', {'user_id' : user_id, 'event': event, 'duration' : duration, 'org_group' : org_group, 'have_org' : have_org, 'venue' : venue, 'have_venue' : have_venue, 'past' : past, 'votes' : votes, 'rating_count' : rating_count})
+    return render(request, 'user/event_detail.html', {'user_id' : user_id, 'event': event, 'duration' : duration, 'org_group' : org_group, 'have_org' : have_org, 'venue' : venue, 'have_venue' : have_venue, 'past' : past, 'votes' : votes, 'rating_count' : rating_count, 'org_id' : org_id, 'visible' : visible})
 
 
 def EventVote(request, user_id, event_id):
@@ -707,11 +712,16 @@ def EventVote(request, user_id, event_id):
         rating_count = 0
     duration = event.duration / 3600
     
+    visible = True
     try:
         org_group = Groups.objects.get(pk=event.group_id)
         have_org = True
+        org_id = org_group.organizer_id
+        if event.visibility == "private":
+            visible = Member.objects.filter(member_id=user_id,group_id=org_group.group_id).exists()
     except Groups.DoesNotExist:
         have_org = False
+        org_id=0
         
     try:
         venue = Venue.objects.get(pk=event.venue_id)
@@ -726,7 +736,7 @@ def EventVote(request, user_id, event_id):
         vote = int(request.POST['choice'])
     except KeyError:
         # Redisplay the question voting form.
-        return render(request, 'user/event_detail.html', {'user_id' : user_id, 'event': event, 'duration' : duration, 'org_group' : org_group, 'have_org' : have_org, 'venue' : venue, 'have_venue' : have_venue, 'past' : past, 'rating_count' : rating_count, 'error_message' : "You didn't select a choice", 'votes' : votes})
+        return render(request, 'user/event_detail.html', {'user_id' : user_id, 'event': event, 'duration' : duration, 'org_group' : org_group, 'have_org' : have_org, 'venue' : venue, 'have_venue' : have_venue, 'past' : past, 'rating_count' : rating_count, 'error_message' : "You didn't select a choice", 'votes' : votes, 'org_id' : org_id, 'visible' : visible})
     
     else:
         event.rating_average = (event.rating_average * rating_count + vote) / (rating_count + 1)
@@ -742,11 +752,16 @@ def EventJoin(request, user_id, event_id):
         rating_count = 0
     duration = event.duration / 3600
     
+    visible = True
     try:
         org_group = Groups.objects.get(pk=event.group_id)
         have_org = True
+        org_id = org_group.organizer_id
+        if event.visibility == "private":
+            visible = Member.objects.filter(member_id=user_id,group_id=org_group.group_id).exists()
     except Groups.DoesNotExist:
         have_org = False
+        org_id=0
         
     try:
         venue = Venue.objects.get(pk=event.venue_id)
@@ -761,7 +776,7 @@ def EventJoin(request, user_id, event_id):
         yes = int(request.POST['yes'])
     except KeyError:
         # Redisplay the question voting form.
-        return render(request, 'user/event_detail.html', {'user_id' : user_id, 'event': event, 'duration' : duration, 'org_group' : org_group, 'have_org' : have_org, 'venue' : venue, 'have_venue' : have_venue, 'past' : past, 'rating_count' : rating_count, 'error_message' : "You didn't select a choice", 'votes' : votes})
+        return render(request, 'user/event_detail.html', {'user_id' : user_id, 'event': event, 'duration' : duration, 'org_group' : org_group, 'have_org' : have_org, 'venue' : venue, 'have_venue' : have_venue, 'past' : past, 'rating_count' : rating_count, 'error_message' : "You didn't select a choice", 'votes' : votes, 'org_id' : org_id, 'visible' : visible})
     
     else:
         wait = False
@@ -776,3 +791,130 @@ def EventJoin(request, user_id, event_id):
         event.save()
         
         return render(request, 'user/event_joinresults.html', {'user_id' : user_id, 'event' : event, 'wait' : wait, 'yes' : yes})
+
+
+def EventCreate(request, user_id, group_id):
+    group = get_object_or_404(Groups,pk=group_id)
+
+    try:
+        org_group = Groups.objects.get(pk=group_id)
+        have_org = True
+        if user_id != org_group.organizer_id:
+            raise Http404("You are not allowed to do this")
+    except Groups.DoesNotExist:
+        have_org = False
+        
+    return render(request, 'user/event_create.html', {'user_id' : user_id, 'group' : group})
+
+
+def EventCreation(request, user_id, group_id):
+    group = get_object_or_404(Groups,pk=group_id)
+    if user_id != group.organizer_id:
+        raise Http404("You are not allowed to do this")
+    now = datetime.datetime.now().replace(tzinfo=utc)
+    
+    try:
+        name = request.POST['name']
+        if len(name) > 100:
+            return render(request, 'user/group_create.html', {'user_id' : user_id, 'event' : event, 'error_message' : "Too long name"})
+        
+        description = request.POST['description']
+        why = request.POST['why']
+        visibility = request.POST['visibility']
+        time = datetime.datetime.strptime(request.POST['time'], '%Y-%m-%d %H:%M:%S').replace(tzinfo=utc)
+        duration = int(request.POST['duration'])*60
+        limit = int(request.POST['limit'])
+        required = request.POST['required'] == "1"
+        amount = int(request.POST['amount'])
+        accepts = request.POST['accepts']
+        htfu = request.POST['htfu']
+        venue_name = request.POST['venue']
+
+        venues = Venue.objects.filter(venue_name=venue_name)
+        if len(venues) == 0:
+            return render(request, 'user/event_create.html', {'user_id' : user_id, 'event' : event, 'error_message' : "This venue doesn't exist"})
+
+    except ValueError:
+        return render(request, 'user/event_create.html', {'user_id' : user_id, 'event' : event, 'error_message' : "Not an integer or not a right time"})
+        
+    except KeyError:
+        return render(request, 'user/event_create.html', {'user_id' : user_id,'event' : event, 'error_message' : "You didn't select a choice"})
+
+    event_id = Events.objects.all().aggregate(Max('event_id'))['event_id__max'] + "0"
+    
+    Events.objects.create(event_id=event_id, created=now, description=description, fee_accepts=accepts, fee_amount=amount, fee_required=required, headcount=0, how_to_find_us=htfu, maybe_rsvp_count=0, event_name=name, photo_url="None", rating_average=0, rating_count=-1, rsvp_limit=limit, event_status="upcoming", event_time=time, updated=now, repinned=False, visibility=visibility, waitlist_count=0, why=why, yes_rsvp_count=0, group_id=group_id, venue_id=venues[0].venue_id, duration=duration)
+    
+    return render(request, 'user/event_created.html', {'user_id' : user_id, 'event_id' : event_id})
+
+        
+def EventModif(request, user_id, event_id):
+    event = get_object_or_404(Events, pk=event_id)
+    now = datetime.datetime.now().replace(tzinfo=utc)
+    try:
+        venue_name = Venue.objects.get(pk=event.venue_id).venue_name
+    except:
+        venue_name = ""
+    
+    try:
+        org_group = Groups.objects.get(pk=event.group_id)
+        have_org = True
+        if user_id != org_group.organizer_id:
+            raise Http404("You are not allowed to do this")
+    except Groups.DoesNotExist:
+        have_org = False
+        raise Http404("You are not allowed to do this")
+        
+    time = event.event_time.strftime("%Y-%m-%d %H:%M:%S")
+    duration = int(event.duration / 60)
+    required = int(event.fee_required)
+    
+    return render(request, 'user/event_modif.html', {'user_id' : user_id, 'event' : event, 'time' : time, 'duration' : duration, 'required' : required, 'venue_name' : venue_name})
+
+
+def EventModification(request, user_id, event_id):
+    event = get_object_or_404(Events, pk=event_id)
+    now = datetime.datetime.now().replace(tzinfo=utc)
+    time = event.event_time.strftime("%Y-%m-%d %H:%M:%S")
+    duration = int(event.duration / 60)
+    required = int(event.fee_required)
+    
+    try:
+        name = request.POST['name']
+        if len(name) > 100:
+            return render(request, 'user/event_modif.html', {'user_id' : user_id, 'event' : event, 'error_message' : "Too long name", 'time' : time, 'duration' : duration, 'required' : required})
+        
+        description = request.POST['description']
+        why = request.POST['why']
+        visibility = request.POST['visibility']
+        time = datetime.datetime.strptime(request.POST['time'], '%Y-%m-%d %H:%M:%S').replace(tzinfo=utc)
+        duration = int(request.POST['duration'])*60
+        limit = int(request.POST['limit'])
+        required = request.POST['required'] == "1"
+        amount = int(request.POST['amount'])
+        accepts = request.POST['accepts']
+
+    except ValueError:
+        return render(request, 'user/event_modif.html', {'user_id' : user_id, 'event' : event, 'error_message' : "Not an integer or not a right time", 'time' : time, 'duration' : duration, 'required' : required})
+        
+    except KeyError:
+        return render(request, 'user/event_modif.html', {'user_id' : user_id,'event' : event, 'error_message' : "You didn't select a choice", 'time' : time, 'duration' : duration, 'required' : required})
+
+    event.event_name = name
+    event.description = description
+    event.why = why
+    event.duration = duration
+    event.rsvp_limit = limit
+    event.visibility = visibility
+    event.fee_required = required
+    event.fee_amount = amount
+    event.fee_accepts = accepts
+
+    if time != event.event_time:
+        event.updated = now
+        event.repinned = True
+        
+    event.event_time = time
+    event.save()
+    
+    return render(request, 'user/event_modified.html', {'user_id' : user_id, 'event_id' : event_id})
+

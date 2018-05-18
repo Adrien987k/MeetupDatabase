@@ -58,4 +58,8 @@ urlpatterns = [
     path('<int:user_id>/event/<str:event_id>/', views.EventDetail, name='event_detail'),
     path('<int:user_id>/event/<str:event_id>/vote', views.EventVote, name='event_vote'),
     path('<int:user_id>/event/<str:event_id>/join', views.EventJoin, name='event_join'),
+    path('<int:user_id>/group/<int:group_id>/create', views.EventCreate, name='event_create'),
+    path('<int:user_id>/group/<int:group_id>/creation', views.EventCreation, name='event_creation'),
+    path('<int:user_id>/event/<str:event_id>/modif', views.EventModif, name='event_modif'),
+    path('<int:user_id>/event/<str:event_id>/modification', views.EventModification, name='event_modification'),
 ]
