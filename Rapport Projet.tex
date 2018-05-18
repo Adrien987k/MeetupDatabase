@@ -1,0 +1,88 @@
+\documentclass[12pt]{article}
+
+\usepackage[latin1]{inputenc} 			% accents
+\usepackage[T1]{fontenc}    			% caractères français
+\usepackage[french]{babel}   			% langue
+\usepackage{graphicx}          		% images
+\usepackage{verbatim}         		% texte préformaté
+\usepackage[cache=false]{minted}  % source code
+\usepackage{stmaryrd}             % semantic symbols
+\usepackage{geometry}							% margins
+
+\geometry{hmargin=2.5cm,vmargin=1.5cm}
+
+\title{Database Project}
+\author{Adrien Bardes et Valentin Richard}
+\date{18/05/2018}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+Our project run with the Django Framework using python. In Django, accessing the database must be done by using specific classes, Django models. Therefore we had to translate our SQL code into models. The common approach using Django is to write models and let Django translate them into SQL. We decided to use that solution.
+
+\section{Install and run our application}
+
+In order to make our application running, follow these steps :
+
+\begin{itemize}
+
+\item In the \textit{MeetupDatabase/meetup/meetup/settings.py} file, change the \textit{DATABASES} attribute to correspond to your database. For example : 
+
+\begin{minted}{bash}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'meetup',
+        'USER': 'postgres',
+        'PASSWORD': 'mypassword',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    }
+}
+\end{minted}
+
+\item In the \textit{MeetupDatabase/meetup} folder run the following commands in a shell :
+
+\textbf{python manage.py migrate}
+
+SQL code is generated and tables are automatically created in the database.
+
+\item The \textit{MeetupDatabase/indexes.sql} file contains our indexes. Run the code in it in your database.
+
+\item The \textit{MeetupDatabase/copy\_tables.sql} file contains a script with \textit{\\copy} commands allowing you to fill the database. Run it in the same folder were the data are (csv files).
+
+\end{itemize}
+
+
+\section{Physical Design and Implementation}
+
+\subsection{Databases indexes}
+
+We use indexes on the following attributes :
+
+\begin{itemize}
+
+\item member.member\_id
+\item member.member\_name
+\item member.group\_id
+\item member.city\_name
+\item venue.city\_name
+\item venue.rating\_average
+\item events.rating\_average
+
+\end{itemize}
+
+This was necessary, considering the fact that we have more than one million members in our databases.
+
+
+\subsection{Integrity Constraint Implementation}
+
+\subsection{Functionality Documentation}
+
+
+
+
+\end{document}
